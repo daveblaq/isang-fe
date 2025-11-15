@@ -5,7 +5,7 @@ import type { FC } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { PiChatDotsBold } from "react-icons/pi";
 import {
-  TbRouteSquare,
+  TbRouteSquare, 
   TbCloudBolt,
   TbWorldSearch,
   TbBell,
@@ -101,7 +101,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           >
             Recents
           </Text>
-          <Tabs defaultValue="chats" className="mt-1 h-[300px]">
+          <Tabs defaultValue="chats" className="mt-1 h-[400px]">
             <TabsList className="w-full justify-between rounded-none border-b border-slate-200 bg-transparent p-0 m-0">
               <TabsTrigger
                 value="chats"
@@ -116,7 +116,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                 Trips
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="chats" className="h-[280px] overflow-hidden">
+            <TabsContent value="chats" className="h-[340px] overflow-hidden">
               <div className="mt-2 space-y-2 overflow-y-auto pr-1 h-full">
                 {chatSections.map((section) => (
                   <div key={section.date}>
