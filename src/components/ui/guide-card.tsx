@@ -38,6 +38,7 @@ export function GuideCard({
   const [isHovered, setIsHovered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (gallery.length <= 1 || !isHovered) return;
@@ -50,7 +51,11 @@ export function GuideCard({
   useEffect(() => {
     if (!menuOpen) return;
     const handleClick = (event: MouseEvent) => {
-      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        cardRef.current !== event.target
+      ) {
         setMenuOpen(false);
       }
     };
@@ -109,7 +114,10 @@ export function GuideCard({
           <FiMoreHorizontal />
         </button>
         {menuOpen && (
-          <div className="absolute right-3 top-14 z-10 w-32 rounded-2xl border border-slate-200 bg-white py-2 shadow-xl">
+          <div
+            ref={menuRef}
+            className="absolute right-3 top-14 z-10 w-32 rounded-2xl border border-slate-200 bg-white py-2 shadow-xl"
+          >
             <button className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50">
               <ArrowUpFromLine className="h-4 w-4" />
               Publish
