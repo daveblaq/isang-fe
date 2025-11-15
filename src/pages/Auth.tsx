@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 import GoogleButton from "@/components/ui/google-button";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
+import OtpBox from "@/components/ui/otp-box";
 
 type EmailFormValues = { email: string };
 type CodeFormValues = { code: string };
@@ -21,6 +23,23 @@ export default function Auth() {
     defaultValues: { code: "" },
     mode: "onSubmit",
   });
+  const [resendTimer, setResendTimer] = useState(300);
+
+  useEffect(() => {
+    if (step !== "code") return;
+    if (resendTimer === 0) return;
+    const timer = setInterval(() => {
+      setResendTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [step, resendTimer]);
+
+  const handleResend = () => {
+    if (resendTimer > 0) return;
+    setResendTimer(300);
+    // eslint-disable-next-line no-console
+    console.log("Resend code requested for", submittedEmail);
+  };
 
   const handleEmailSubmit = (values: EmailFormValues) => {
     setSubmittedEmail(values.email);
@@ -41,7 +60,7 @@ export default function Auth() {
           <header className="space-y-2">
             <Text
               variant="h3"
-              className="font-semibold font-ibm text-slate-900"
+              className="font-semibold font-ibm text-3xl text-slate-900"
             >
               Welcome to Isang
             </Text>
@@ -104,39 +123,49 @@ export default function Auth() {
           </div>
         </section>
       ) : (
-        <section className="space-y-6 rounded-[40px] border border-[#F2F2F2] bg-white px-8 py-10 shadow-sm">
+        <section className="space-y-8 py-1">
           <header className="space-y-2 text-left">
-            <Text variant="h3" className="font-semibold text-slate-900">
-              Almost there
+            <Text
+              variant="h3"
+              className="text-3xl font-ibm font-semibold text-slate-900"
+            >
+              We sent you a code
             </Text>
-            <Text variant="span" className="text-sm text-slate-500">
+            <Text variant="span" className="text-sm font-ibm text-slate-500">
               We sent a confirmation code to {submittedEmail}
             </Text>
           </header>
 
           <form
             onSubmit={codeForm.handleSubmit(handleCodeSubmit)}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <div className="space-y-2">
-              <Text
-                variant="span"
-                className="text-sm font-semibold text-slate-600"
-              >
-                Verification code
-              </Text>
-              <Input
-                placeholder="Enter 6-digit code"
-                maxLength={6}
-                {...codeForm.register("code")}
-                className="h-12 rounded-[16px] border-[#E4E4E7] text-center text-lg tracking-[0.3em]"
-              />
-            </div>
+            <OtpBox
+              length={6}
+              onComplete={(code) => codeForm.setValue("code", code)}
+            />
+
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resendTimer > 0}
+              className="text-sm font-semibold text-[#FF5A1F] disabled:text-slate-400"
+            >
+              {resendTimer > 0
+                ? `Resend code in ${Math.floor(resendTimer / 60)
+                    .toString()
+                    .padStart(2, "0")}:${(resendTimer % 60)
+                    .toString()
+                    .padStart(2, "0")}`
+                : "Resend code"}
+            </button>
+
             <Button
               type="submit"
-              className="h-12 w-full rounded-[16px] bg-[#FFB39A] text-base font-semibold text-white hover:bg-[#ff9875]"
+              disabled={!codeForm.watch("code")}
+              className="w-full rounded-[8px] py-3.5 font-ibm text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
             >
-              Verify & continue
+              Verify account
             </Button>
           </form>
 
