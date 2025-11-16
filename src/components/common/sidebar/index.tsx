@@ -9,8 +9,8 @@ import {
   TbCloudBolt,
   TbWorldSearch,
   TbBell,
+  TbHeart,
 } from "react-icons/tb";
-
 import Text from "@/components/ui/text";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ type SidebarProps = {
 const primaryNav = [
   { label: "Discover", icon: TbWorldSearch, to: "/" },
   { label: "Inspiration", icon: TbCloudBolt, to: "/inspiration" },
-  { label: "Favorites", icon: TbRouteSquare, to: "/favorites" },
+  { label: "Favorites", icon: TbHeart, to: "/favorites" },
   { label: "Notification", icon: TbBell, to: "/notification" },
   { label: "Creator Space", icon: TbRouteSquare, to: "/creator-space" },
 ];
@@ -67,7 +67,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
 
         <div className="px-5 pt-6">
-          <Button className="flex w-full items-center justify-center rounded-[8px] border border-[#FFE6D5] bg-[#FFF9F5] px-4 py-3 text-base font-semibold text-[#E62E05] shadow-none">
+          <Button className="flex w-full items-center justify-center rounded-[8px] border border-[#FFE6D5] bg-[#FFF9F5] px-4 py-3 text-base font-semibold text-[#E62E05] font-ibm shadow-none">
             <span className="flex items-center gap-2">
               <TbRouteSquare className="h-5 w-5 text-[#E62E05]" /> Plan a trip
             </span>

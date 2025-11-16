@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { type DateRange } from "react-day-picker";
 import { format } from "date-fns";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -235,7 +234,7 @@ export default function TripPlanner() {
                 className="h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-3xl font-medium leading-snug "
               />
             </span>
-            budget, starting
+           , starting
           </p>
           <p className="flex flex-wrap items-center gap-2">
             <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>

@@ -5,6 +5,9 @@ import CreatorSpace from "@/pages/CreatorSpace";
 import Home from "@/pages/Home";
 import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
+import Notifications from "@/pages/Notifications";
+import Favorites from "@/pages/Favorites";
+import Inspiration from "@/pages/Inspiration";
 import AuthLayout from "./components/layouts/auth-layout";
 
 function App() {
@@ -40,6 +43,30 @@ function App() {
           element={
             <DashLayout title="Settings">
               <Settings />
+            </DashLayout>
+          }
+        />
+        <Route
+          path="/notification"
+          element={
+            <DashLayout title="Notifications">
+              <Notifications />
+            </DashLayout>
+          }
+        />
+        <Route
+          path="/favorites"
+          element={
+            <DashLayout title="Favorites">
+              <Favorites />
+            </DashLayout>
+          }
+        />
+        <Route
+          path="/inspiration"
+          element={
+            <DashLayout title="Inspiration">
+              <Inspiration />
             </DashLayout>
           }
         />

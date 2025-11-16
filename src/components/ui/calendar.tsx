@@ -7,7 +7,6 @@ import {
   ChevronRightIcon,
 } from "lucide-react";
 import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
-
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -90,7 +89,7 @@ function Calendar({
         table: "w-full border-collapse",
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
-          "text-gray-500 rounded-md flex-1 font-normal text-base uppercase font-ibm font-medium select-none",
+          "text-gray-500 rounded-md flex-1 font-normal text-sm uppercase font-ibm font-medium select-none",
           defaultClassNames.weekday
         ),
         week: cn("flex w-full mt-2", defaultClassNames.week),

@@ -18,7 +18,7 @@ const tabItems = [
 export default function Settings() {
   return (
     <Tabs defaultValue="profile" className="space-y-8">
-      <TabsList className="flex w-fit items-center gap-2 rounded-full bg-[#F5F6FB]">
+      <TabsList className="flex w-fit items-center gap-2 rounded-full bg-[#F5F6FB] border border-gray-200">
         {tabItems.map((tab) => (
           <TabsTrigger
             key={tab.value}
