@@ -24,7 +24,7 @@ export default function DestinationHero({
     "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 
   return (
-    <div className="relative h-[400px] w-full overflow-hidden rounded-[16px]">
+    <div className="relative h-[250px] md:h-[400px] w-full overflow-hidden rounded-[16px] order-first md:order-last">
       <img
         src={heroImage}
         alt={destination}

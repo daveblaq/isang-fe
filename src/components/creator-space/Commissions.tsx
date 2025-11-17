@@ -41,7 +41,7 @@ const guides = [
 export default function Commissions() {
   return (
     <div className="space-y-5">
-      <div className="grid rounded-xl border border-gray-200 bg-white divide-x divide-gray-200 shadow-md sm:grid-cols-3">
+      <div className="grid rounded-xl border border-gray-200 bg-white divide-x divide-gray-200 shadow-md grid-cols-2 md:grid-cols-3">
         {stats.map((stat) => (
           <div key={stat.label} className="space-y-3 p-5 ">
             <div className="flex items-center justify-between">

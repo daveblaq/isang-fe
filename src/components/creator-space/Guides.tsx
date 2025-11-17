@@ -3,7 +3,7 @@ import { creatorGuides } from "@/data/creatorGuides";
 
 export default function Guides() {
   return (
-    <div className="grid gap-6 lg:grid-cols-4 md:grid-cols-2">
+    <div className="grid gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
       {creatorGuides.map((guide) => (
         <GuideCard
           key={guide.id}

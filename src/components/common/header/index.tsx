@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiMenu } from "react-icons/fi";
 import Text from "@/components/ui/text";
 
 type HeaderProps = {
@@ -16,25 +16,42 @@ import {
 } from "@/components/ui/popover";
 import { countryOptions, languageOptions } from "@/data/headerOptions";
 
-const Header: FC<HeaderProps> = ({ title }) => {
+const Header: FC<HeaderProps> = ({ title, sidebarOpen, setSidebarOpen }) => {
   const [selectedLanguage, setSelectedLanguage] = useState(languageOptions[0]);
   const [selectedCountry, setSelectedCountry] = useState(countryOptions[0]);
 
   return (
-    <header className="sticky top-0 z-20 flex w-full flex-col gap-8 bg-white px-8 py-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <Text variant="h4" className="font-semibold text-black text-xl font-ibm">
-          {title ?? "Plan a trip"}
-        </Text>
+    <header className="sticky top-0 z-20 flex w-full flex-col gap-4 bg-white px-4 py-3 shadow-sm md:gap-8 md:px-8 md:py-4">
+      <div className="flex flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSidebarOpen?.(!sidebarOpen)}
+            className="lg:hidden flex items-center justify-center h-8 w-8 rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors"
+            aria-label="Toggle sidebar"
+          >
+            <FiMenu className="h-5 w-5" />
+          </button>
+          <Text
+            variant="h4"
+            className="font-semibold text-black text-lg font-ibm md:text-xl"
+          >
+            {title}
+          </Text>
+        </div>
+        <div className="flex items-center gap-2 md:gap-3">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full border border-[#D0D5DD] bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow">
+              <button className="flex items-center gap-2 rounded-full border border-[#D0D5DD] bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow md:px-4 md:py-2 md:text-sm">
                 {selectedLanguage.code}
-                <FiChevronDown className="text-slate-400" />
+                <FiChevronDown className="text-slate-400 h-3 w-3 md:h-4 md:w-4" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-44 p-2">
+            <PopoverContent
+              className="w-44 p-2"
+              side="bottom"
+              align="end"
+              collisionPadding={8}
+            >
               <div className="flex flex-col gap-1">
                 {languageOptions.map((option) => (
                   <button
@@ -57,13 +74,20 @@ const Header: FC<HeaderProps> = ({ title }) => {
           </Popover>
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full border border-[#D0D5DD] shadow bg-white px-2 py-2 text-sm font-medium text-slate-700">
-                <span>{selectedCountry.flag}</span>
+              <button className="flex items-center gap-1.5 rounded-full border border-[#D0D5DD] shadow bg-white px-2 py-1.5 text-xs font-medium text-slate-700 md:gap-2 md:px-2 md:py-2 md:text-sm">
+                <span className="text-sm md:text-base">
+                  {selectedCountry.flag}
+                </span>
                 {selectedCountry.code}
-                <FiChevronDown className="text-slate-400" />
+                <FiChevronDown className="text-slate-400 h-3 w-3 md:h-4 md:w-4" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-48 p-2">
+            <PopoverContent
+              className="w-48 p-2"
+              side="bottom"
+              align="end"
+              collisionPadding={8}
+            >
               <div className="flex flex-col gap-1">
                 {countryOptions.map((option) => (
                   <button

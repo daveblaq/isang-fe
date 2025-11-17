@@ -75,7 +75,18 @@ export default function TripPlanner() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [datePopoverOpen, setDatePopoverOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const destinationWrapperRef = useRef<HTMLDivElement | null>(null);
+  const destinationDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const filteredDestinations = useMemo(() => {
     const query = values.destination.trim().toLowerCase();
@@ -92,7 +103,9 @@ export default function TripPlanner() {
     const handler = (event: MouseEvent) => {
       if (
         destinationWrapperRef.current &&
-        !destinationWrapperRef.current.contains(event.target as Node)
+        !destinationWrapperRef.current.contains(event.target as Node) &&
+        destinationDropdownRef.current &&
+        !destinationDropdownRef.current.contains(event.target as Node)
       ) {
         setDestinationOpen(false);
       }
@@ -100,6 +113,47 @@ export default function TripPlanner() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [destinationOpen]);
+
+  // Adjust destination dropdown position to stay within viewport
+  useEffect(() => {
+    if (
+      !destinationOpen ||
+      !destinationDropdownRef.current ||
+      !destinationWrapperRef.current
+    )
+      return;
+
+    const dropdown = destinationDropdownRef.current;
+    const wrapper = destinationWrapperRef.current;
+    const rect = wrapper.getBoundingClientRect();
+    const dropdownRect = dropdown.getBoundingClientRect();
+
+    // Check if dropdown goes beyond viewport
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Reset transform
+    dropdown.style.transform = "none";
+    dropdown.style.left = "0";
+    dropdown.style.right = "auto";
+
+    // Check right edge
+    if (dropdownRect.right > viewportWidth - 8) {
+      const overflow = dropdownRect.right - (viewportWidth - 8);
+      dropdown.style.transform = `translateX(-${overflow}px)`;
+    }
+
+    // Check bottom edge (flip to top if needed)
+    if (
+      dropdownRect.bottom > viewportHeight - 8 &&
+      rect.top > dropdownRect.height
+    ) {
+      dropdown.style.top = "auto";
+      dropdown.style.bottom = "100%";
+      dropdown.style.marginTop = "0";
+      dropdown.style.marginBottom = "8px";
+    }
+  }, [destinationOpen, filteredDestinations.length]);
 
   // Calculate days from date range (derived value)
   const calculatedDays = useMemo(() => {
@@ -151,14 +205,14 @@ export default function TripPlanner() {
   };
 
   return (
-    <section className="grid gap-8 md:grid-cols-2 py-10">
-      <div className="space-y-8">
-        <div className="space-y-2 mt-8 text-3xl font-ibm font-medium text-black mb-5">
-          <p className="flex flex-wrap items-center gap-2">
+    <section className="grid gap-6 md:gap-8 md:grid-cols-2 py-6 md:py-10">
+      <div className="space-y-6 md:space-y-8">
+        <div className="space-y-2 mt-4 md:mt-8 text-xl md:text-3xl font-ibm font-medium text-black mb-3 md:mb-5">
+          <p className="flex flex-wrap items-center gap-1 md:gap-2">
             I am going to{" "}
             <span
               ref={destinationWrapperRef}
-              className="relative inline-block min-w-[160px] max-w-[160px] align-middle"
+              className="relative inline-block min-w-[120px] max-w-[120px] align-middle md:min-w-[160px] md:max-w-[160px]"
             >
               <Input
                 placeholder="destination"
@@ -172,11 +226,19 @@ export default function TripPlanner() {
                   }));
                   setDestinationOpen(true);
                 }}
-                className="h-10 shadow-none border border-transparent bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-3xl font-medium leading-snug"
+                className="h-8 md:h-10 shadow-none border border-transparent bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-xl md:text-3xl font-medium leading-snug"
               />
               {destinationOpen && filteredDestinations.length > 0 && (
-                <div className="absolute left-0 top-full z-20 mt-2 w-[300px] rounded-[8px] border border-slate-200 bg-white p-0 shadow-xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 ease-out">
-                  <div className="max-h-80 overflow-y-auto py-2">
+                <div
+                  ref={destinationDropdownRef}
+                  className="absolute left-0 top-full z-20 mt-2 w-[calc(100vw-1rem)] max-w-[300px] rounded-[8px] border border-slate-200 bg-white p-0 shadow-xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 ease-out md:left-0"
+                  style={{
+                    maxWidth: "min(calc(100vw - 1rem), 300px)",
+                    left: "0",
+                    right: "auto",
+                  }}
+                >
+                  <div className="max-h-[calc(100vh-220px)] md:max-h-80 overflow-y-auto py-2">
                     {filteredDestinations.map((dest) => (
                       <button
                         key={dest.id}
@@ -214,9 +276,9 @@ export default function TripPlanner() {
             </span>
             ,
           </p>
-          <p className="flex flex-wrap items-center gap-2">
+          <p className="flex flex-wrap items-center gap-1 md:gap-2">
             with ₦{" "}
-            <span className="inline-block  min-w-[140px] max-w-[140px] align-middle">
+            <span className="inline-block min-w-[100px] max-w-[100px] align-middle md:min-w-[140px] md:max-w-[140px]">
               <Input
                 placeholder="budget"
                 value={values.budget}
@@ -234,12 +296,12 @@ export default function TripPlanner() {
                 className="h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-3xl font-medium leading-snug "
               />
             </span>
-           , starting
+            , starting
           </p>
-          <p className="flex flex-wrap items-center gap-2">
+          <p className="flex flex-wrap items-center gap-1 md:gap-2">
             <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
               <PopoverTrigger asChild>
-                <span className="inline-block min-w-[100px] max-w-[100px] align-middle">
+                <span className="inline-block min-w-[80px] max-w-[80px] align-middle md:min-w-[100px] md:max-w-[100px]">
                   <Input
                     placeholder="dd/mm"
                     value={values.dates}
@@ -248,27 +310,36 @@ export default function TripPlanner() {
                   />
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-[800px] p-0" align="start">
-                <div className="p-4">
+              <PopoverContent
+                className="w-[calc(100vw-0.5rem)] max-w-[800px] p-0 md:w-[calc(100vw-2rem)]"
+                align="start"
+                side="bottom"
+                sideOffset={4}
+                collisionPadding={16}
+                avoidCollisions={true}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+              >
+                <div className="p-2 md:p-4 max-h-[calc(100vh-100px)] md:max-h-none overflow-y-auto">
                   <RangeCalendar
                     dateRange={dateRange}
                     onSelect={setDateRange}
                     defaultMonth={dateRange?.from || new Date()}
+                    numberOfMonths={isMobile ? 1 : 2}
                     className="rounded-lg border-0 w-full"
                   />
-                  <div className="flex items-center justify-between border-t border-slate-200 px-4 pt-3">
+                  <div className="flex flex-col gap-2 md:gap-3 items-stretch md:flex-row md:items-center md:justify-between border-t border-slate-200 px-2 md:px-4 pt-2 md:pt-3 pb-2 md:pb-0">
                     <Text
                       variant="span"
-                      className="text-sm font-medium text-slate-700"
+                      className="text-xs md:text-sm font-medium text-slate-700 break-words"
                     >
                       {formatDateRangeSummary() || "Select date range"}
                     </Text>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                       <Button
                         type="button"
                         variant="ghost"
                         onClick={handleClearDate}
-                        className="h-8 px-3 text-sm text-slate-600 hover:text-slate-900 font-ibm"
+                        className="flex-1 md:flex-none h-8 px-3 text-xs md:text-sm text-slate-600 hover:text-slate-900 font-ibm"
                       >
                         Clear
                       </Button>
@@ -276,7 +347,7 @@ export default function TripPlanner() {
                         type="button"
                         onClick={handleSaveDate}
                         disabled={!dateRange?.from || !dateRange?.to}
-                        className="py-3.5 font-ibm rounded-md bg-[#FF5A1F] px-4 text-sm font-medium text-white hover:bg-[#ff7846] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 md:flex-none py-2 md:py-2.5 font-ibm rounded-md bg-[#FF5A1F] px-3 md:px-4 text-xs md:text-sm font-medium text-white hover:bg-[#ff7846] disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Save date
                       </Button>
@@ -298,11 +369,11 @@ export default function TripPlanner() {
           </p>
         </div>
 
-        <Button className="rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white">
+        <Button className="w-full md:w-auto rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white">
           Let&apos;s go!
         </Button>
 
-        <p className="text-sm text-gray-500 font-medium pt-6">
+        <p className="text-xs md:text-sm text-gray-500 font-medium pt-4 md:pt-6">
           Not sure where to go or begin?{" "}
           <button className="font-semibold text-[#FF5A1F]">
             Ask Isang AI ↗
@@ -310,7 +381,7 @@ export default function TripPlanner() {
         </p>
       </div>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center order-first md:order-last">
         <div className="w-full">
           {!values.destination ||
           !values.budget ||
@@ -319,7 +390,7 @@ export default function TripPlanner() {
             <iframe
               title="map-preview"
               src="https://www.openstreetmap.org/export/embed.html?bbox=-2.308%2C46.5%2C-0.5%2C47.5&layer=mapnik"
-              className="h-[400px] w-full rounded-[28px] border-0"
+              className="h-[250px] md:h-[400px] w-full rounded-[16px] md:rounded-[28px] border-0"
             />
           ) : (
             <DestinationHero

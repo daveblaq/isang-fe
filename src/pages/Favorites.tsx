@@ -27,24 +27,24 @@ export default function Favorites() {
   const pathfindersCount = 0;
 
   return (
-    <div className="min-h-screen bg-white -mx-4 -my-4 md:-mx-6 md:-my-6 p-6">
-      <div className="space-y-8 pb-8 pt-4">
+    <div className="min-h-screen bg-white -mx-4 -my-4 md:-mx-6 md:-my-6 p-4 md:p-6">
+      <div className="space-y-6 md:space-y-8 pb-6 md:pb-8 pt-2 md:pt-4">
         <div className="flex items-center justify-between">
           <Text
             variant="span"
-            className="text-base font-medium font-ibm text-slate-600"
+            className="text-sm md:text-base font-medium font-ibm text-slate-600"
           >
             {favoritesCount} places • {pathfindersCount} pathfinders
           </Text>
         </div>
 
-        <Tabs defaultValue="all" className="space-y-6">
-          <TabsList className="flex w-fit items-center gap-2 rounded-full bg-[#F5F6FB] border border-gray-200">
+        <Tabs defaultValue="all" className="space-y-4 md:space-y-6">
+          <TabsList className="flex flex-nowrap w-full md:w-fit items-center gap-1 md:gap-2 rounded-full bg-[#F5F6FB] border border-gray-200 p-1 overflow-x-auto">
             {tabItems.map((tab) => (
               <TabsTrigger
                 key={tab}
                 value={tab}
-                className="rounded-full px-4 py-2 text-sm font-medium font-ibm capitalize text-slate-500 data-[state=active]:bg-black data-[state=active]:text-white data-[state=active]:border-none"
+                className="rounded-full px-2.5 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-medium font-ibm capitalize text-slate-500 data-[state=active]:bg-black data-[state=active]:text-white data-[state=active]:border-none whitespace-nowrap flex-shrink-0"
               >
                 {tab}
               </TabsTrigger>
@@ -53,21 +53,19 @@ export default function Favorites() {
 
           {tabItems.map((tab) => (
             <TabsContent key={tab} value={tab} className="mt-0">
-              <div className="overflow-x-auto pb-4">
-                <div className="flex gap-6 w-max">
-                  {filteredFavorites(tab).map((favorite) => (
-                    <FavoriteCard
-                      key={favorite.id}
-                      images={favorite.images}
-                      title={favorite.title}
-                      location={favorite.location}
-                      rating={favorite.rating}
-                      reviewCount={favorite.reviewCount}
-                      author={favorite.author}
-                      avatar={favorite.avatar}
-                    />
-                  ))}
-                </div>
+              <div className="grid grid-cols-2 md:flex md:overflow-x-auto md:pb-4 gap-3 md:gap-6">
+                {filteredFavorites(tab).map((favorite) => (
+                  <FavoriteCard
+                    key={favorite.id}
+                    images={favorite.images}
+                    title={favorite.title}
+                    location={favorite.location}
+                    rating={favorite.rating}
+                    reviewCount={favorite.reviewCount}
+                    author={favorite.author}
+                    avatar={favorite.avatar}
+                  />
+                ))}
               </div>
             </TabsContent>
           ))}

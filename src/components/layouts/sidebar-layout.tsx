@@ -23,7 +23,7 @@ export default function DashLayout({
             title={title}
           />
 
-          <main className="flex-1 overflow-y-auto bg-white px-6 pb-8 pt-4">
+          <main className="flex-1 overflow-y-auto bg-white px-4 pb-6 pt-4 md:px-6 md:pb-8">
             <div className="mx-auto max-w-screen-2xl">{children}</div>
           </main>
         </div>

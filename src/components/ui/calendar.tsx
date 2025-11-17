@@ -42,11 +42,11 @@ function Calendar({
       classNames={{
         root: cn("w-fit", defaultClassNames.root),
         months: cn(
-          "flex gap-4 flex-col md:flex-row relative",
+          "flex gap-2 md:gap-4 flex-col md:flex-row relative",
           defaultClassNames.months
         ),
         month: cn(
-          "flex flex-col text-base font-medium text-black font-ibm w-full gap-4",
+          "flex flex-col text-sm md:text-base font-medium text-black font-ibm w-full gap-2 md:gap-4",
           defaultClassNames.month
         ),
         nav: cn(
@@ -64,7 +64,7 @@ function Calendar({
           defaultClassNames.button_next
         ),
         month_caption: cn(
-          "flex items-center justify-center text-xl font-medium text-black font-ibm h-(--cell-size) w-full px-(--cell-size)",
+          "flex items-center justify-center text-base md:text-xl font-medium text-black font-ibm h-(--cell-size) w-full px-(--cell-size)",
           defaultClassNames.month_caption
         ),
         dropdowns: cn(
@@ -89,7 +89,7 @@ function Calendar({
         table: "w-full border-collapse",
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
-          "text-gray-500 rounded-md flex-1 font-normal text-sm uppercase font-ibm font-medium select-none",
+          "text-gray-500 rounded-md flex-1 font-normal text-xs md:text-sm uppercase font-ibm font-medium select-none",
           defaultClassNames.weekday
         ),
         week: cn("flex w-full mt-2", defaultClassNames.week),

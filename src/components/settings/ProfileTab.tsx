@@ -213,18 +213,20 @@ export default function ProfileTab() {
             name="location"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel className="text-sm font-semibold text-slate-700">
+                <FormLabel className="text-xs md:text-sm font-semibold text-slate-700">
                   City, Country
                 </FormLabel>
                 <FormControl className="w-full">
                   <div className="relative flex w-full items-center">
-                    <span className="absolute left-4 text-xl">🇳🇬</span>
+                    <span className="absolute left-3 md:left-4 text-lg md:text-xl">
+                      🇳🇬
+                    </span>
                     <Input
                       {...field}
-                      className="w-full pl-12 pr-12"
+                      className="w-full pl-10 md:pl-12 pr-10 md:pr-12 text-sm md:text-base"
                       placeholder="City, Country"
                     />
-                    <MapPin className="absolute right-4 h-4 w-4 text-slate-400" />
+                    <MapPin className="absolute right-3 md:right-4 h-3 w-3 md:h-4 md:w-4 text-slate-400" />
                   </div>
                 </FormControl>
                 <FormMessage />

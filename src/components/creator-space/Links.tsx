@@ -41,7 +41,7 @@ const guides = [
 export default function Links() {
   return (
     <div className="space-y-5">
-      <div className="grid rounded-xl border border-gray-200 bg-white divide-x divide-gray-200 shadow-md sm:grid-cols-3">
+      <div className="grid rounded-xl border border-gray-200 bg-white divide-x divide-gray-200 shadow-md grid-cols-2 md:grid-cols-3">
         {stats.map((stat) => (
           <div key={stat.label} className="space-y-3 p-5 ">
             <div className="flex items-center justify-between">
@@ -78,8 +78,8 @@ export default function Links() {
         ))}
       </div>
 
-      <div className="bg-white p-2">
-        <div className="mt-6 grid grid-cols-6 gap-4 text-xs font-ibm font-medium text-gray-700 bg-gray-50 p-5 border-b border-gray-200">
+      <div className="bg-white p-2 overflow-x-auto">
+        <div className="mt-4 md:mt-6 grid grid-cols-6 gap-2 md:gap-4 text-xs font-ibm font-medium text-gray-700 bg-gray-50 p-3 md:p-5 border-b border-gray-200 min-w-[600px]">
           <Text variant="span" className="text-gray-700">
             Link name
           </Text>
@@ -99,11 +99,11 @@ export default function Links() {
             Earnings
           </Text>
         </div>
-        <div className=" divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200">
           {guides.map((guide) => (
             <div
               key={guide}
-              className="grid grid-cols-6 gap-4 px-2 py-6 text-sm hover:border-slate-100 hover:bg-slate-50"
+              className="grid grid-cols-6 gap-2 md:gap-4 px-2 py-4 md:py-6 text-xs md:text-sm hover:border-slate-100 hover:bg-slate-50 min-w-[600px]"
             >
               <Text
                 variant="span"
@@ -129,39 +129,39 @@ export default function Links() {
             </div>
           ))}
         </div>
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 font-ibm text-xs text-[#2E384D]">
-          <Text variant="span">Page 1 of 30</Text>
+            <div className="mt-4 md:mt-6 flex flex-col md:flex-row md:flex-wrap items-center justify-between gap-3 md:gap-4 font-ibm text-xs text-[#2E384D]">
+              <Text variant="span" className="order-3 md:order-1">Page 1 of 30</Text>
 
-          <div className="flex flex-1 items-center justify-center gap-2.5 text-[#8A97B5]">
-            {[1, 2, 3].map((page) => (
-              <button
-                key={page}
-                className={`h-7 w-7 rounded-md border text-sm ${
-                  page === 3
-                    ? "border-[#A6CFAF] bg-[#E3F5E5] text-[#0C7D45]"
-                    : "border-transparent text-[#8A97B5]"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-            <Text variant="span" className="text-[#8A97B5]">
-              …
-            </Text>
-            <Text variant="span" className="text-[#8A97B5]">
-              10 11 12
-            </Text>
-          </div>
+              <div className="flex flex-1 items-center justify-center gap-1.5 md:gap-2.5 text-[#8A97B5] order-2">
+                {[1, 2, 3].map((page) => (
+                  <button
+                    key={page}
+                    className={`h-6 w-6 md:h-7 md:w-7 rounded-md border text-xs md:text-sm ${
+                      page === 3
+                        ? "border-[#A6CFAF] bg-[#E3F5E5] text-[#0C7D45]"
+                        : "border-transparent text-[#8A97B5]"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <Text variant="span" className="text-[#8A97B5]">
+                  …
+                </Text>
+                <Text variant="span" className="text-[#8A97B5] hidden md:inline">
+                  10 11 12
+                </Text>
+              </div>
 
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 rounded-md border border-[#CFD9E8] px-4 py-1.5 text-sm font-medium text-[#2E384D] shadow-sm">
-              ← Previous
-            </button>
-            <button className="flex items-center gap-2 rounded-md border border-[#CFD9E8] px-4 py-1.5 text-sm font-medium text-[#2E384D] shadow-sm">
-              Next →
-            </button>
-          </div>
-        </div>
+              <div className="flex items-center gap-2 order-1 md:order-3">
+                <button className="flex items-center gap-1 md:gap-2 rounded-md border border-[#CFD9E8] px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-[#2E384D] shadow-sm">
+                  ← Prev
+                </button>
+                <button className="flex items-center gap-1 md:gap-2 rounded-md border border-[#CFD9E8] px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-[#2E384D] shadow-sm">
+                  Next →
+                </button>
+              </div>
+            </div>
       </div>
     </div>
   );

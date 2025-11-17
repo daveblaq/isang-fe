@@ -77,7 +77,7 @@ export default function Auth() {
             }}
           />
 
-          <div className="flex items-center gap-4 text-xs font-ibm font-semibold text-gray-500">
+          <div className="flex items-center gap-3 md:gap-4 text-xs font-ibm font-semibold text-gray-500">
             <span className="h-px flex-1 bg-slate-200" />
             OR
             <span className="h-px flex-1 bg-slate-200" />
@@ -85,12 +85,12 @@ export default function Auth() {
 
           <form
             onSubmit={emailForm.handleSubmit(handleEmailSubmit)}
-            className="space-y-6 mb-10"
+            className="space-y-4 md:space-y-6 mb-6 md:mb-10"
           >
             <div className="space-y-2 text-left">
               <Text
                 variant="span"
-                className="text-sm font-semibold text-slate-600"
+                className="text-xs md:text-sm font-semibold text-slate-600"
               >
                 Email address
               </Text>
@@ -99,21 +99,21 @@ export default function Auth() {
                 type="email"
                 required
                 {...emailForm.register("email")}
-                className="py-3.5 rounded-[8px] border-[#E4E4E7] bg-white text-base"
+                className="py-3 md:py-3.5 rounded-[8px] border-[#E4E4E7] bg-white text-sm md:text-base"
               />
             </div>
             <Button
               type="submit"
               disabled={!emailForm.watch("email")?.trim()}
-              className="w-full rounded-[8px] py-3.5 font-ibm text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
+              className="w-full rounded-[8px] py-3 md:py-3.5 font-ibm text-sm md:text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
             >
               Continue with email
             </Button>
           </form>
-          <div className="mt-3">
+          <div className="mt-2 md:mt-3">
             <Text
               variant="span"
-              className="text-center text-sm font-regular font-ibm text-gray-500"
+              className="text-center text-xs md:text-sm font-regular font-ibm text-gray-500"
             >
               By signing up, you agree to the{" "}
               <button className="font-semibold">Terms of Use</button>,{" "}
@@ -123,22 +123,25 @@ export default function Auth() {
           </div>
         </section>
       ) : (
-        <section className="space-y-8 py-1">
+        <section className="space-y-6 md:space-y-8 py-1 w-full max-w-md">
           <header className="space-y-2 text-left">
             <Text
               variant="h3"
-              className="text-3xl font-ibm font-semibold text-slate-900"
+              className="text-2xl md:text-3xl font-ibm font-semibold text-slate-900"
             >
               We sent you a code
             </Text>
-            <Text variant="span" className="text-sm font-ibm text-slate-500">
+            <Text
+              variant="span"
+              className="text-xs md:text-sm font-ibm text-slate-500"
+            >
               We sent a confirmation code to {submittedEmail}
             </Text>
           </header>
 
           <form
             onSubmit={codeForm.handleSubmit(handleCodeSubmit)}
-            className="space-y-6"
+            className="space-y-4 md:space-y-6"
           >
             <OtpBox
               length={6}

@@ -70,7 +70,7 @@ export function GuideCard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative h-[287px] w-full">
+        <div className="relative h-[240px] md:h-[287px] w-full">
           {gallery.length > 0 ? (
             gallery.map((image, imgIndex) => (
               <img

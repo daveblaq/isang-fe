@@ -38,13 +38,13 @@ export default function FavoriteCard({
   }, [gallery.length, isHovered]);
 
   return (
-    <div className="flex-shrink-0 w-[320px] space-y-3">
+    <div className="w-full md:flex-shrink-0 md:w-[320px] space-y-2 md:space-y-3">
       <div
         className="relative overflow-hidden rounded-[12px]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative h-[287px] w-full">
+        <div className="relative h-[200px] md:h-[287px] w-full">
           {gallery.length > 0 ? (
             gallery.map((image, imgIndex) => (
               <img
@@ -81,7 +81,7 @@ export default function FavoriteCard({
             {gallery.map((_, dotIndex) => (
               <span
                 key={dotIndex}
-                className={`h-2 w-2 rounded-full transition-all ${
+                className={`md:h-2 md:w-2 h-1.5 w-1.5 rounded-full transition-all ${
                   dotIndex === currentIndex ? "bg-white" : "bg-white/40"
                 }`}
               />
@@ -96,33 +96,36 @@ export default function FavoriteCard({
         >
           {title}
         </Text>
-        <div className="flex items-center gap-2">
-          <MapPin className="h-4 w-4 text-slate-900" />
-          <Text
-            variant="span"
-            className="text-sm font-regular font-ibm text-gray-500"
-          >
-            {location}
-          </Text>
-          <span className="h-1 w-1 rounded-full bg-slate-400" />
-          <Star className="h-4 w-4 fill-slate-900 text-slate-900" />
-          <Text
-            variant="span"
-            className="text-sm font-regular font-ibm text-slate-500"
-          >
-            {rating} ({reviewCount})
-          </Text>
+        <div className="flex md:flex-row flex-col md:items-center items-start gap-2">
+          <div className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-slate-900" />
+            <Text
+              variant="span"
+              className="text-sm font-regular font-ibm text-gray-500"
+            >
+              {location}
+            </Text>
+          </div>
+          <div className="flex items-center gap-2">
+            <Star className="h-4 w-4 fill-slate-900 text-slate-900" />
+            <Text
+              variant="span"
+              className="text-sm font-regular font-ibm text-slate-500"
+            >
+              {rating} ({reviewCount})
+            </Text>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {avatar ? (
             <img
               src={avatar}
               alt={author}
-              className="h-7 w-7 rounded-full object-cover"
+              className="h-6 w-6 md:h-7 md:w-7 rounded-full object-cover"
               loading="lazy"
             />
           ) : (
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-500 text-white text-xs font-medium">
+            <span className="flex h-6 w-6 md:h-7 md:w-7 items-center justify-center rounded-full bg-purple-500 text-white text-xs font-medium">
               {author.charAt(0).toUpperCase()}
             </span>
           )}

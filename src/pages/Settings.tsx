@@ -17,13 +17,13 @@ const tabItems = [
 
 export default function Settings() {
   return (
-    <Tabs defaultValue="profile" className="space-y-8">
-      <TabsList className="flex w-fit items-center gap-2 rounded-full bg-[#F5F6FB] border border-gray-200">
+    <Tabs defaultValue="profile" className="space-y-6 md:space-y-8">
+      <TabsList className="flex flex-wrap w-full md:w-fit items-center gap-2 rounded-full bg-[#F5F6FB] border border-gray-200 p-1">
         {tabItems.map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className="rounded-full px-4 py-2 text-sm font-medium text-slate-500 data-[state=active]:bg-black data-[state=active]:border-none data-[state=active]:text-white"
+            className="rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-medium text-slate-500 data-[state=active]:bg-black data-[state=active]:border-none data-[state=active]:text-white"
           >
             {tab.label}
           </TabsTrigger>
@@ -51,4 +51,3 @@ export default function Settings() {
     </Tabs>
   );
 }
-

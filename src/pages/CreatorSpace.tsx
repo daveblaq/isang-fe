@@ -6,13 +6,13 @@ import Commissions from "@/components/creator-space/Commissions";
 
 export default function CreatorSpace() {
   return (
-    <Tabs defaultValue="guides" className="space-y-8">
-      <TabsList className="flex w-fit items-center gap-2 rounded-full bg-[#F5F6FB] border border-gray-200">
+    <Tabs defaultValue="guides" className="space-y-6 md:space-y-8">
+      <TabsList className="flex flex-wrap w-full md:w-fit items-center gap-2 rounded-full bg-[#F5F6FB] border border-gray-200 p-1">
         {["guides", "links", "earnings", "commissions"].map((tab) => (
           <TabsTrigger
             key={tab}
             value={tab}
-            className="rounded-full px-4 py-2 text-sm capitalize data-[state=active]:bg-black data-[state=active]:border-none data-[state=active]:text-white"
+            className="rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm capitalize data-[state=active]:bg-black data-[state=active]:border-none data-[state=active]:text-white"
           >
             {tab}
           </TabsTrigger>
