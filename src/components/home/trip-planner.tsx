@@ -293,7 +293,7 @@ export default function TripPlanner() {
                   const formatted = Number(raw).toLocaleString("en-NG");
                   setValues((prev) => ({ ...prev, budget: formatted }));
                 }}
-                className="h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-3xl font-medium leading-snug "
+                className="h-8 md:h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-xl md:text-3xl font-medium leading-snug"
               />
             </span>
             , starting
@@ -306,7 +306,7 @@ export default function TripPlanner() {
                     placeholder="dd/mm"
                     value={values.dates}
                     readOnly
-                    className="h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-3xl font-medium leading-snug cursor-pointer"
+                    className="h-8 md:h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-xl md:text-3xl font-medium leading-snug cursor-pointer"
                   />
                 </span>
               </PopoverTrigger>
@@ -362,7 +362,7 @@ export default function TripPlanner() {
                 placeholder="x"
                 value={datePopoverOpen ? calculatedDays || "" : values.days}
                 readOnly
-                className="h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-3xl font-medium leading-snug cursor-default"
+                className="h-8 md:h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-xl md:text-3xl font-medium leading-snug cursor-default"
               />
             </span>{" "}
             days.
@@ -381,7 +381,7 @@ export default function TripPlanner() {
         </p>
       </div>
 
-      <div className="flex items-center justify-center order-first md:order-last">
+      <div className="md:flex hidden items-center justify-center order-first md:order-last">
         <div className="w-full">
           {!values.destination ||
           !values.budget ||
