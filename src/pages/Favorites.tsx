@@ -39,7 +39,7 @@ export default function Favorites() {
         </div>
 
         <Tabs defaultValue="all" className="space-y-4 md:space-y-6">
-          <TabsList className="flex flex-nowrap w-full md:w-fit items-center gap-1 md:gap-2 rounded-full bg-[#F5F6FB] border border-gray-200 p-1 overflow-x-auto">
+          <TabsList className="flex flex-nowrap w-full md:w-fit items-center gap-1 md:gap-2 rounded-full bg-[#F5F6FB] border border-gray-200 overflow-x-auto">
             {tabItems.map((tab) => (
               <TabsTrigger
                 key={tab}
@@ -53,7 +53,7 @@ export default function Favorites() {
 
           {tabItems.map((tab) => (
             <TabsContent key={tab} value={tab} className="mt-0">
-              <div className="grid grid-cols-2 md:flex md:overflow-x-auto md:pb-4 gap-3 md:gap-6">
+              <div className="grid grid-cols-1 md:flex md:overflow-x-auto md:pb-4 gap-3 md:gap-6">
                 {filteredFavorites(tab).map((favorite) => (
                   <FavoriteCard
                     key={favorite.id}

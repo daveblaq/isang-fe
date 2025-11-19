@@ -36,9 +36,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       <main className="h-dvh  w-full bg-white">
         <div className="lg:w-full w-11/12 h-full mx-auto ">
           <div className="flex overflow-hidden lg:flex-row flex-col w-full lg:gap-[50px] gap-0">
-            <div className="lg:w-1/2 w-full overflow-auto h-auto px-0 pt-[1.5rem] lg:pt-[2rem]">
+            <div className="lg:w-1/2 w-full overflow-auto h-auto px-0 pt-4 md:pt-6 lg:pt-[2rem] pb-4 md:pb-6">
               <div className="w-full h-full overflow-y-scroll custom-scrollbar div-scroll scrollbar-hidden ">
-                <div className="mx-auto">{children}</div>
+                <div className="mx-auto w-full">{children}</div>
               </div>
             </div>
             <div className="relative h-screen lg:w-1/2 w-full md:block hidden bg-white overflow-hidden">

@@ -212,7 +212,7 @@ export default function TripPlanner() {
             I am going to{" "}
             <span
               ref={destinationWrapperRef}
-              className="relative inline-block min-w-[120px] max-w-[120px] align-middle md:min-w-[160px] md:max-w-[160px]"
+              className="relative inline-block min-w-[120px] max-w-[120px] align-middle md:min-w-[150px] md:max-w-[150px]"
             >
               <Input
                 placeholder="destination"

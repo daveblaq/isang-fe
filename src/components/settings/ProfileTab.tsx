@@ -80,12 +80,15 @@ export default function ProfileTab() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <Text variant="h5" className="text-xl font-semibold text-slate-900">
+        <Text
+          variant="h5"
+          className="text-lg md:text-xl font-semibold text-slate-900"
+        >
           Profile
         </Text>
-        <Text variant="span" className="text-sm text-slate-500">
+        <Text variant="span" className="text-xs md:text-sm text-slate-500">
           Update how you appear publicly across Isang.
         </Text>
       </div>
@@ -93,16 +96,16 @@ export default function ProfileTab() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 lg:max-w-2xl"
+          className="space-y-4 md:space-y-6 w-full lg:max-w-2xl"
         >
           <FormField
             control={form.control}
             name="avatarFile"
             render={({ field }) => (
               <FormItem>
-                <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-20 w-20 rounded-[8px] border-2 border-white">
+                <div className="flex flex-col gap-3 p-3 md:gap-4 md:p-4 md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <Avatar className="h-16 w-16 md:h-20 md:w-20 rounded-[8px] border-2 border-white">
                       <AvatarImage src={photoPreview} alt="profile avatar" />
                       <AvatarFallback className="rounded-[8px] bg-emerald-100 text-emerald-700">
                         KI
@@ -111,13 +114,13 @@ export default function ProfileTab() {
                     <div>
                       <Text
                         variant="span"
-                        className="text-sm font-medium text-slate-900"
+                        className="text-xs md:text-sm font-medium text-slate-900"
                       >
                         Profile photo
                       </Text>
                       <Text
                         variant="span"
-                        className="block text-xs text-slate-500"
+                        className="block text-[10px] md:text-xs text-slate-500"
                       >
                         Recommended size 400x400px
                       </Text>
@@ -126,10 +129,10 @@ export default function ProfileTab() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex items-center gap-2 rounded-[8px] border-slate-200 bg-white text-sm font-medium text-gray-800 font-ibm py-2.5"
+                    className="w-full md:w-auto flex items-center justify-center gap-2 rounded-[8px] border-slate-200 bg-white text-xs md:text-sm font-medium text-gray-800 font-ibm py-2 md:py-2.5"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <Edit3 className="h-4 w-4" />
+                    <Edit3 className="h-3 w-3 md:h-4 md:w-4" />
                     Edit photo
                   </Button>
                 </div>
@@ -159,17 +162,21 @@ export default function ProfileTab() {
             )}
           />
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
             <FormField
               control={form.control}
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-semibold text-slate-700">
+                  <FormLabel className="text-xs md:text-sm font-semibold text-slate-700">
                     First name
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="First name" />
+                    <Input
+                      {...field}
+                      placeholder="First name"
+                      className="text-sm md:text-base"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -180,11 +187,15 @@ export default function ProfileTab() {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-semibold text-slate-700">
+                  <FormLabel className="text-xs md:text-sm font-semibold text-slate-700">
                     Last name
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Last name" />
+                    <Input
+                      {...field}
+                      placeholder="Last name"
+                      className="text-sm md:text-base"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,11 +208,15 @@ export default function ProfileTab() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold text-slate-700">
+                <FormLabel className="text-xs md:text-sm font-semibold text-slate-700">
                   Username
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="@username" />
+                  <Input
+                    {...field}
+                    placeholder="@username"
+                    className="text-sm md:text-base"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -239,13 +254,13 @@ export default function ProfileTab() {
             name="bio"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold text-slate-700">
+                <FormLabel className="text-xs md:text-sm font-semibold text-slate-700">
                   Bio
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    className="rounded-[8px] shadow border border-slate-200 bg-white px-5 py-4 text-base text-slate-700"
+                    className="rounded-[8px] shadow border border-slate-200 bg-white px-4 py-3 md:px-5 md:py-4 text-sm md:text-base text-slate-700"
                   />
                 </FormControl>
                 <FormMessage />
@@ -256,7 +271,7 @@ export default function ProfileTab() {
           <div className="pt-2">
             <Button
               type="submit"
-              className="w-full rounded-[8px] bg-[#FF5A1F] py-4 text-base font-medium font-ibm text-white"
+              className="w-full rounded-[8px] bg-[#FF5A1F] py-3 md:py-4 text-sm md:text-base font-medium font-ibm text-white"
             >
               Update profile
             </Button>

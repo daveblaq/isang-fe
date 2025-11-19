@@ -78,10 +78,10 @@ export default function OtpBox({
 
   return (
     <div className="w-full mx-auto">
-      <Label className="text-base font-medium font-inter text-[#98A2B3] mb-6 block">
+      <Label className="text-sm md:text-base font-medium font-inter text-[#98A2B3] mb-4 md:mb-6 block">
         Verification Code
       </Label>
-      <div className="flex gap-[32px] items-center ">
+      <div className="flex gap-2 md:gap-4 lg:gap-[32px] items-center justify-center md:justify-start">
         {code.map((num, idx) => (
           <div key={idx} className="relative">
             <Input
@@ -92,15 +92,15 @@ export default function OtpBox({
               autoComplete="one-time-code"
               pattern="\d{1}"
               maxLength={1}
-              className={`w-[60px] h-[56px] px-4 text-center text-2xl font-bold rounded-[8px] focus:outline-none border border-[#CFD9E8] focus:ring-2 focus:ring-primary ${
-                idx === 3 ? "ml-8" : ""
+              className={`w-[45px] h-[48px] md:w-[50px] md:h-[52px] lg:w-[60px] lg:h-[56px] px-2 md:px-4 text-center text-xl md:text-2xl font-bold rounded-[8px] focus:outline-none border border-[#CFD9E8] focus:ring-2 focus:ring-primary ${
+                idx === 3 ? "ml-2 md:ml-4 lg:ml-8" : ""
               }`}
               onChange={(e) => processInput(e, idx)}
               onKeyUp={(e) => onKeyUp(e, idx)}
               onPaste={handlePaste}
             />
             {idx === 2 && (
-              <div className="absolute -right-9 top-1/2 transform -translate-y-1/2 text-[#CFD9E8] text-2xl">
+              <div className="absolute -right-3 md:-right-5 lg:-right-9 top-1/2 transform -translate-y-1/2 text-[#CFD9E8] text-xl md:text-2xl">
                 -
               </div>
             )}

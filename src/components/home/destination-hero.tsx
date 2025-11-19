@@ -24,11 +24,11 @@ export default function DestinationHero({
     "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 
   return (
-    <div className="relative h-[250px] md:h-[400px] w-full overflow-hidden rounded-[16px] order-first md:order-last">
+    <div className="group relative h-[250px] md:h-[400px] w-full overflow-hidden rounded-[16px] order-first md:order-last cursor-pointer">
       <img
         src={heroImage}
         alt={destination}
-        className="h-full w-full object-cover"
+        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         loading="lazy"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#09212600]/90 via-black/20 to-transparent" />

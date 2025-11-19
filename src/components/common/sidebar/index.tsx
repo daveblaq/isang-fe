@@ -76,7 +76,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </Button>
         </div>
 
-        <nav className="mt-4 flex flex-col gap-1 px-2 md:mt-6 md:px-3">
+        <nav className="hidden lg:flex mt-4 flex-col gap-1 px-2 md:mt-6 md:px-3">
           {primaryNav.map((item) => (
             <NavLink
               key={item.label}

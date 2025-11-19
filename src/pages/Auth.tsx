@@ -54,17 +54,20 @@ export default function Auth() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-full h-full items-center justify-center flex-col gap-8 py-52">
+    <div className="mx-auto flex w-full max-w-full h-full items-center justify-center flex-col gap-6 md:gap-8 py-8 md:py-16 lg:py-52 px-4 md:px-0">
       {step === "email" ? (
-        <section className="space-y-8 py-1 h-full mx-auto">
+        <section className="space-y-6 md:space-y-8 py-1 h-full mx-auto w-full max-w-md">
           <header className="space-y-2">
             <Text
               variant="h3"
-              className="font-semibold font-ibm text-3xl text-slate-900"
+              className="font-semibold font-ibm text-2xl md:text-3xl text-slate-900"
             >
               Welcome to Isang
             </Text>
-            <Text variant="span" className="text-sm text-slate-500 font-ibm">
+            <Text
+              variant="span"
+              className="text-xs md:text-sm text-slate-500 font-ibm"
+            >
               Your smart guide for every journey
             </Text>
           </header>
@@ -85,7 +88,7 @@ export default function Auth() {
 
           <form
             onSubmit={emailForm.handleSubmit(handleEmailSubmit)}
-            className="space-y-4 md:space-y-6 mb-6 md:mb-10"
+            className="space-y-4 md:space-y-6 mb-4 md:mb-10"
           >
             <div className="space-y-2 text-left">
               <Text
@@ -99,13 +102,13 @@ export default function Auth() {
                 type="email"
                 required
                 {...emailForm.register("email")}
-                className="py-3 md:py-3.5 rounded-[8px] border-[#E4E4E7] bg-white text-sm md:text-base"
+                className="py-2.5 md:py-3.5 rounded-[8px] border-[#E4E4E7] bg-white text-sm md:text-base"
               />
             </div>
             <Button
               type="submit"
               disabled={!emailForm.watch("email")?.trim()}
-              className="w-full rounded-[8px] py-3 md:py-3.5 font-ibm text-sm md:text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
+              className="w-full rounded-[8px] py-2.5 md:py-3.5 font-ibm text-sm md:text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
             >
               Continue with email
             </Button>
@@ -113,7 +116,7 @@ export default function Auth() {
           <div className="mt-2 md:mt-3">
             <Text
               variant="span"
-              className="text-center text-xs md:text-sm font-regular font-ibm text-gray-500"
+              className="text-center text-[10px] md:text-xs lg:text-sm font-regular font-ibm text-gray-500 leading-relaxed"
             >
               By signing up, you agree to the{" "}
               <button className="font-semibold">Terms of Use</button>,{" "}
@@ -123,17 +126,17 @@ export default function Auth() {
           </div>
         </section>
       ) : (
-        <section className="space-y-6 md:space-y-8 py-1 w-full max-w-md">
+        <section className="space-y-5 md:space-y-8 py-1 w-full max-w-md px-4 md:px-0">
           <header className="space-y-2 text-left">
             <Text
               variant="h3"
-              className="text-2xl md:text-3xl font-ibm font-semibold text-slate-900"
+              className="text-xl md:text-2xl lg:text-3xl font-ibm font-semibold text-slate-900"
             >
               We sent you a code
             </Text>
             <Text
               variant="span"
-              className="text-xs md:text-sm font-ibm text-slate-500"
+              className="text-xs md:text-sm font-ibm text-slate-500 break-words"
             >
               We sent a confirmation code to {submittedEmail}
             </Text>
@@ -152,7 +155,7 @@ export default function Auth() {
               type="button"
               onClick={handleResend}
               disabled={resendTimer > 0}
-              className="text-sm font-semibold text-[#FF5A1F] disabled:text-slate-400"
+              className="text-xs md:text-sm font-semibold text-[#FF5A1F] disabled:text-slate-400"
             >
               {resendTimer > 0
                 ? `Resend code in ${Math.floor(resendTimer / 60)
@@ -166,14 +169,14 @@ export default function Auth() {
             <Button
               type="submit"
               disabled={!codeForm.watch("code")}
-              className="w-full rounded-[8px] py-3.5 font-ibm text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
+              className="w-full rounded-[8px] py-2.5 md:py-3.5 font-ibm text-sm md:text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
             >
               Verify account
             </Button>
           </form>
 
           <button
-            className="text-sm font-semibold text-[#0D7F88]"
+            className="text-xs md:text-sm font-semibold text-[#0D7F88]"
             onClick={() => setStep("email")}
           >
             ← Back to email

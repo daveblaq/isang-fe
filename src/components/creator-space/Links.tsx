@@ -133,25 +133,25 @@ export default function Links() {
               <Text variant="span" className="order-3 md:order-1">Page 1 of 30</Text>
 
               <div className="flex flex-1 items-center justify-center gap-1.5 md:gap-2.5 text-[#8A97B5] order-2">
-                {[1, 2, 3].map((page) => (
-                  <button
-                    key={page}
+              {[1, 2, 3].map((page) => (
+                <button
+                  key={page}
                     className={`h-6 w-6 md:h-7 md:w-7 rounded-md border text-xs md:text-sm ${
-                      page === 3
+                    page === 3
                         ? "border-[#A6CFAF] bg-[#E3F5E5] text-[#0C7D45]"
                         : "border-transparent text-[#8A97B5]"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
                 <Text variant="span" className="text-[#8A97B5]">
-                  …
-                </Text>
+                …
+              </Text>
                 <Text variant="span" className="text-[#8A97B5] hidden md:inline">
-                  10 11 12
-                </Text>
-              </div>
+                10 11 12
+              </Text>
+            </div>
 
               <div className="flex items-center gap-2 order-1 md:order-3">
                 <button className="flex items-center gap-1 md:gap-2 rounded-md border border-[#CFD9E8] px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-[#2E384D] shadow-sm">
@@ -159,9 +159,9 @@ export default function Links() {
                 </button>
                 <button className="flex items-center gap-1 md:gap-2 rounded-md border border-[#CFD9E8] px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-[#2E384D] shadow-sm">
                   Next →
-                </button>
-              </div>
-            </div>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

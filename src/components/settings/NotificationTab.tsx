@@ -50,28 +50,36 @@ export default function NotificationTab() {
 
   return (
     <div className="space-y-4 bg-white p-0 lg:max-w-3xl">
+      <div className="pb-3 md:pb-5">
+        <Text variant="h5" className="text-lg md:text-xl font-semibold text-slate-900">
+          Notification
+        </Text>
+        <Text variant="span" className="text-xs md:text-sm text-slate-500">
+          Manage your notification preferences.
+        </Text>
+      </div>
       {settings.map((setting, index) => (
         <div
           key={setting.id}
-          className={`flex flex-wrap items-start justify-between gap-4 px-6 py-6 ${
+          className={`flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-3 md:gap-4 px-4 md:px-6 py-4 md:py-6 ${
             index !== settings.length - 1 ? "border-b border-slate-100" : ""
           }`}
         >
-          <div className="max-w-xl space-y-2 flex flex-col">
+          <div className="flex-1 space-y-1 md:space-y-2 flex flex-col min-w-0">
             <Text
               variant="span"
-              className="text-base font-medium font-ibm text-slate-900"
+              className="text-sm md:text-base font-medium font-ibm text-slate-900"
             >
               {setting.title}
             </Text>
-            <Text variant="span" className="text-sm font-ibm text-slate-500">
+            <Text variant="span" className="text-xs md:text-sm font-ibm text-slate-500">
               {setting.description}
             </Text>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto justify-between sm:justify-start">
             <Text
               variant="span"
-              className="text-sm font-semibold text-slate-900"
+              className="text-xs md:text-sm font-semibold text-slate-900"
             >
               Enable
             </Text>

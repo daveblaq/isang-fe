@@ -17,11 +17,11 @@ export default function DiscoverCard({
 }: DiscoverCardProps) {
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-[12px]">
+      <div className="group relative overflow-hidden rounded-[12px] cursor-pointer">
         <img
           src={image}
           alt={title}
-          className="h-[220px] w-full object-cover"
+          className="h-[220px] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           loading="lazy"
         />
         <div className="absolute inset-x-4 top-4 flex items-center justify-between">
