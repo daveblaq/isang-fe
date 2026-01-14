@@ -8,10 +8,12 @@ export default function DashLayout({
   children,
   title,
   headerContent,
+  mainClassName,
 }: {
   children: React.ReactNode;
   title?: string;
   headerContent?: React.ReactNode;
+  mainClassName?: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
@@ -27,8 +29,8 @@ export default function DashLayout({
             customContent={headerContent}
           />
 
-          <main className="flex-1 overflow-y-auto bg-white px-4 pb-20 pt-4 md:px-6 md:pb-8 md:pt-4">
-            <div className="mx-auto max-w-screen-2xl">{children}</div>
+          <main className={mainClassName || "flex-1 overflow-y-auto bg-white px-4 pb-20 pt-4 md:px-6 md:pb-8 md:pt-4"}>
+            {children}
           </main>
         </div>
       </div>

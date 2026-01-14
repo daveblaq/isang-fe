@@ -1,8 +1,7 @@
-
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {useLocation} from "react-router-dom";
 import {Button} from "@/components/ui/button";
-import {Paperclip, Mic, ArrowUp, ChevronDown, Share2, MapPin} from "lucide-react";
+import {Paperclip, Mic, ArrowUp, ChevronDown, Share2, MapPin, ChevronsLeft, ChevronsRight, SlidersHorizontal} from "lucide-react";
 import DashLayout from "@/components/layouts/sidebar-layout";
 
 // Mock data based on the image
@@ -45,6 +44,8 @@ const FOOD = [
 export default function TripChat() {
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [isMapFull, setIsMapFull] = useState(false);
   
   // Extract state. Default to Cape Town if accessed directly for demo purposes
   const { destination = "Cape Town", budget = "46.5M", dates = "Aug 18-21", days = "3" } = location.state || {};
@@ -74,7 +75,14 @@ export default function TripChat() {
                 <Share2 className="w-4 h-4" />
                 Share
             </Button>
-            <Button variant="outline" className="rounded-full gap-2 h-9 text-sm border border-gray-300">
+            <Button 
+                variant="outline" 
+                className="rounded-full gap-2 h-9 text-sm border border-gray-300"
+                onClick={() => {
+                  if (isMapOpen) setIsMapFull(false);
+                  setIsMapOpen(!isMapOpen);
+                }}
+            >
                 <MapPin className="w-4 h-4" />
                 Checkpoints 
                 <span className="bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full ml-1">0</span>
@@ -84,126 +92,188 @@ export default function TripChat() {
   );
 
   return (
-    <DashLayout headerContent={headerContent}>
-      <div className="flex flex-col h-full w-full max-w-5xl mx-auto font-ibm relative">
-      
-      {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto no-scrollbar space-y-8 pb-32">
-        {/* User Message */}
-        <div className="flex justify-end">
-            <div className="bg-[#FFF9F5] text-gray-900 px-5 py-3 rounded-[20px] rounded-tr-sm max-w-[80%] md:max-w-[70%] text-sm leading-relaxed">
-                I am going to {destination}, with ₦ {budget}, starting {dates}, for {days} days
-            </div>
-        </div>
-        
-        {/* AI Response */}
-        <div className="flex gap-4 items-start max-w-full">
-            <div className="w-[32px] h-[32px] rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-1">
-                <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src='https://placehold.co/20x20?text=AI'} /> 
+    <DashLayout 
+      headerContent={headerContent}
+      mainClassName="flex-1 flex flex-col overflow-hidden bg-white"
+    >
+      <div className="flex flex-1 w-full overflow-hidden relative">
+        {/* Chat Area - Left side */}
+        <div 
+          className={`flex flex-col h-full  transition-all duration-500 ease-in-out ${
+            isMapOpen ? (isMapFull ? 'w-0 opacity-0 overflow-hidden' : 'w-1/2') : 'w-[75%] mx-auto'
+          }`}
+        >
+          {/* Messages - Scrollable */}
+          <div className="flex-1 overflow-y-auto no-scrollbar space-y-8 p-4 md:p-6 pb-4">
+            {/* User Message */}
+            <div className="flex justify-end pt-4">
+                <div className="bg-[#FFF9F5] text-gray-900 px-5 py-3 rounded-[20px] rounded-tr-sm max-w-[80%] md:max-w-[70%] text-sm md:text-base leading-relaxed">
+                    I am going to {destination}, with ₦ {budget}, starting {dates}, for {days} days
+                </div>
             </div>
             
-            <div className="flex-1 bg-[#F9FAFB] p-4 md:p-6 rounded-[20px] rounded-tl-sm space-y-8">
-                <div className="prose text-gray-800 text-sm leading-relaxed max-w-none">
-                    You're heading to {destination} from {dates} for {days} days, with a budget of ₦{budget} (roughly R140,000). That's more than enough for a stylish city-meets-nature getaway. Here's what fits your vibe 👇🏾
+            {/* AI Response */}
+            <div className="flex gap-4 items-start max-w-full">
+                <div className="w-[32px] h-[32px] rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src='https://placehold.co/20x20?text=AI'} /> 
                 </div>
                 
-                {/* Stays Section */}
-                <div className="space-y-4 bg-white border border-[#EDF0F6] p-4 rounded-[12px]">
-                    <div className="flex items-center justify-between">
-                         <h3 className="text-base font-bold flex items-center gap-2">
-                            🏨 Stays
-                         </h3>
-                         <Button variant="outline" className="text-[#FF5A1F] border-[#FF5A1F] hover:bg-[#FFF5F1] hover:text-[#FF5A1F] rounded-full h-8 text-xs font-medium">
-                            See more stays
-                         </Button>
+                <div className="flex-1 bg-[#F9FAFB] p-4 md:p-6 rounded-[20px] rounded-tl-sm space-y-8 border border-[#EDF0F6]">
+                    <div className="prose text-gray-800 text-sm md:text-base leading-relaxed max-w-none">
+                        You're heading to {destination} from {dates} for {days} days, with a budget of ₦{budget} (roughly R140,000). That's more than enough for a stylish city-meets-nature getaway. Here's what fits your vibe 👇🏾
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {STAYS.map((stay) => (
-                            <div key={stay.id} className="group cursor-pointer space-y-2">
-                                <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                                    <img src={stay.image} alt={stay.title} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" />
+                    {/* Stays Section */}
+                    <div className="space-y-4 bg-white border border-[#EDF0F6] p-4 rounded-[12px]">
+                        <div className="flex items-center justify-between">
+                             <h3 className="text-base font-bold flex items-center gap-2">
+                                🏨 Stays
+                             </h3>
+                             <Button variant="outline" className="text-[#FF5A1F] border-[#FF5A1F] hover:bg-[#FFF5F1] hover:text-[#FF5A1F] rounded-full h-8 text-xs font-medium">
+                                See more stays
+                             </Button>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {STAYS.map((stay) => (
+                                <div key={stay.id} className="group cursor-pointer space-y-2">
+                                    <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+                                        <img src={stay.image} alt={stay.title} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" />
+                                    </div>
+                                    <h4 className="text-sm font-medium text-gray-500 line-clamp-2 leading-snug">
+                                        {stay.title}
+                                    </h4>
                                 </div>
-                                <h4 className="text-sm font-medium text-gray-500 line-clamp-2 leading-snug">
-                                    {stay.title}
-                                </h4>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                        
+                        <div className="text-right">
+                            <span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
+                                Sources ~ Booking.com, agoda, Reddit
+                            </span>
+                        </div>
                     </div>
-                    
-                    <div className="text-right">
-                        <span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
-                            Sources ~ Booking.com, agoda, Reddit
-                        </span>
-                    </div>
-                </div>
 
-                {/* Food Section */}
-                 <div className="space-y-4 bg-white border border-[#EDF0F6] p-4 rounded-[12px]">
-                    <div className="flex items-center justify-between">
-                         <h3 className="text-base font-bold flex items-center gap-2">
-                            🥘 Food & Restaurants
-                         </h3>
-                         <Button variant="outline" className="text-[#FF5A1F] border-[#FF5A1F] hover:bg-[#FFF5F1] hover:text-[#FF5A1F] rounded-full h-8 text-xs font-medium">
-                            Explore food spots
-                         </Button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {FOOD.map((item) => (
-                            <div key={item.id} className="group cursor-pointer space-y-2">
-                                <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" />
+                    {/* Food Section */}
+                     <div className="space-y-4 bg-white border border-[#EDF0F6] p-4 rounded-[12px]">
+                        <div className="flex items-center justify-between">
+                             <h3 className="text-base font-bold flex items-center gap-2">
+                                🥘 Food & Restaurants
+                             </h3>
+                             <Button variant="outline" className="text-[#FF5A1F] border-[#FF5A1F] hover:bg-[#FFF5F1] hover:text-[#FF5A1F] rounded-full h-8 text-xs font-medium">
+                                Explore food spots
+                             </Button>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {FOOD.map((item) => (
+                                <div key={item.id} className="group cursor-pointer space-y-2">
+                                    <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+                                        <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" />
+                                    </div>
+                                    <h4 className="text-sm font-medium text-gray-500 line-clamp-2 leading-snug">
+                                        {item.title}
+                                    </h4>
                                 </div>
-                                <h4 className="text-sm font-medium text-gray-500 line-clamp-2 leading-snug">
-                                    {item.title}
-                                </h4>
-                            </div>
-                        ))}
-                    </div>
-                    
-                    <div className="text-right">
-                        <span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
-                            Sources ~ Booking.com, agoda, Reddit
-                        </span>
+                            ))}
+                        </div>
+                        
+                        <div className="text-right">
+                            <span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
+                                Sources ~ Booking.com, agoda, Reddit
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
+          </div>
+          
+          {/* Input Area - Fixed at bottom */}
+          <div className="p-4 md:px-6 md:pb-6 shrink-0 border-t border-gray-50">
+             <div className="max-w-4xl mx-auto relative group">
+                <div 
+                    onClick={() => inputRef.current?.focus()}
+                    className="relative bg-white rounded-[16px] border border-gray-200 shadow-lg h-[116px] p-4 flex flex-col justify-between focus-within:ring-2 ring-gray-100 ring-offset-2 transition-all cursor-text"
+                >
+                    <input 
+                        ref={inputRef}
+                        type="text" 
+                        placeholder="Ask me anything! 🌍" 
+                        className="w-full bg-transparent border-none outline-none text-base text-gray-800 placeholder:text-gray-400 p-0 focus-visible:ring-0"
+                    />
+                    
+                    <div className="flex justify-between items-end">
+                        <div className="flex items-center gap-3">
+                             <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                                <Paperclip className="w-5 h-5" />
+                             </button>
+                              <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                                <Mic className="w-5 h-5" />
+                             </button>
+                        </div>
+                        
+                        <button className="w-10 h-10 rounded-lg bg-[#FF855F] hover:bg-[#FF5A1F] flex items-center justify-center text-white transition-colors">
+                            <ArrowUp className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        {/* Map - Fixed sibling on right half */}
+        <div 
+          className={`h-full bg-white border-l border-gray-200 shadow-2xl transition-all duration-500 ease-in-out relative ${
+            isMapOpen ? (isMapFull ? 'w-full opacity-100' : 'w-1/2 opacity-100') : 'w-0 opacity-0 overflow-hidden'
+          }`}
+        >
+          <div className="flex flex-col h-full w-full">
+          {/* Map Controls Header - Floating */}
+          <div className="absolute top-4 left-0 right-0 px-4 flex items-center justify-between z-40 pointer-events-none">
+            <button 
+              onClick={() => setIsMapFull(!isMapFull)}
+              className="pointer-events-auto w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+            >
+              {isMapFull ? <ChevronsRight className="w-5 h-5 text-gray-900" /> : <ChevronsLeft className="w-5 h-5 text-gray-900" />}
+            </button>
+            
+            <div className="pointer-events-auto h-10 px-6 bg-white rounded-full shadow-lg flex items-center justify-center gap-1.5">
+              <div className="w-1.5 h-1.5 bg-black rounded-full" />
+              <div className="w-1.5 h-1.5 bg-black rounded-full" />
+              <div className="w-1.5 h-1.5 bg-black rounded-full" />
+            </div>
+            
+            <button className="pointer-events-auto w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
+              <SlidersHorizontal className="w-5 h-5 text-gray-900" />
+            </button>
+          </div>
+          
+          {/* Map Container */}
+          <div className="flex-1 relative bg-gray-50">
+              <iframe
+                title="map-view"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=18.3772,-34.0547,18.4772,-33.9547&layer=mapnik&marker=-34.0047,18.4272"
+                className="w-full h-full border-0"
+              />
+              
+              {/* Map Controls Overlay */}
+              <div className="absolute top-4 right-4 flex flex-col gap-2">
+                <button className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <span className="text-gray-700 font-medium">+</span>
+                </button>
+                <button className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <span className="text-gray-700 font-medium">−</span>
+                </button>
+              </div>
+              
+              {/* Checkpoint Counter */}
+              <div className="absolute bottom-4 left-4 bg-white rounded-full px-4 py-2 shadow-lg">
+                <span className="text-sm font-medium text-gray-700">0 checkpoints</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-      {/* Input Area */}
-      <div className="sticky bottom-4 left-0 right-0 p-0">
-         <div className="max-w-4xl mx-auto relative group">
-            <div 
-                onClick={() => inputRef.current?.focus()}
-                className="relative bg-white rounded-[16px] border border-gray-200 shadow-lg h-[116px] p-4 flex flex-col justify-between focus-within:ring-2 ring-gray-100 ring-offset-2 transition-all cursor-text"
-            >
-                <input 
-                    ref={inputRef}
-                    type="text" 
-                    placeholder="Ask me anything! 🌍" 
-                    className="w-full bg-transparent border-none outline-none text-base text-gray-800 placeholder:text-gray-400 p-0 focus-visible:ring-0"
-                />
-                
-                <div className="flex justify-between items-end">
-                    <div className="flex items-center gap-3">
-                         <button className="text-gray-400 hover:text-gray-600 transition-colors">
-                            <Paperclip className="w-5 h-5" />
-                         </button>
-                          <button className="text-gray-400 hover:text-gray-600 transition-colors">
-                            <Mic className="w-5 h-5" />
-                         </button>
-                    </div>
-                    
-                    <button className="w-10 h-10 rounded-lg bg-[#FF855F] hover:bg-[#FF5A1F] flex items-center justify-center text-white transition-colors">
-                        <ArrowUp className="w-5 h-5" />
-                    </button>
-                </div>
-            </div>
-         </div>
-      </div>
-    </div>
     </DashLayout>
   );
 }
