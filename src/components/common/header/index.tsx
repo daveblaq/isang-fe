@@ -7,6 +7,7 @@ type HeaderProps = {
   sidebarOpen?: boolean | string;
   setSidebarOpen?: (open: boolean) => void;
   title?: string;
+  customContent?: React.ReactNode;
 };
 
 import {
@@ -16,13 +17,28 @@ import {
 } from "@/components/ui/popover";
 import { countryOptions, languageOptions } from "@/data/headerOptions";
 
-const Header: FC<HeaderProps> = ({ title, sidebarOpen, setSidebarOpen }) => {
+const Header: FC<HeaderProps> = ({ title, sidebarOpen, setSidebarOpen, customContent }) => {
   const [selectedLanguage, setSelectedLanguage] = useState(languageOptions[0]);
   const [selectedCountry, setSelectedCountry] = useState(countryOptions[0]);
 
   return (
-    <header className="sticky top-0 z-20 flex w-full flex-col gap-4 bg-white px-4 py-3 shadow-sm md:gap-8 md:px-8 md:py-4">
-      <div className="flex flex-row items-center justify-between gap-3">
+    <header className="sticky top-0 z-20 flex w-full flex-col gap-4 bg-white px-4 py-3 shadow-sm md:gap-8 md:px-8 md:py-4 h-[72px] justify-center">
+      <div className="flex flex-row items-center justify-between gap-3 w-full">
+        {customContent ? (
+            <>
+             <div className="flex items-center gap-3 w-full">
+                <button
+                    onClick={() => setSidebarOpen?.(!sidebarOpen)}
+                    className="lg:hidden flex items-center justify-center h-8 w-8 rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors shrink-0"
+                    aria-label="Toggle sidebar"
+                >
+                    <FiMenu className="h-5 w-5" />
+                </button>
+                {customContent}
+             </div>
+            </>
+        ) : (
+            <>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen?.(!sidebarOpen)}
@@ -112,6 +128,8 @@ const Header: FC<HeaderProps> = ({ title, sidebarOpen, setSidebarOpen }) => {
             </PopoverContent>
           </Popover>
         </div>
+        </>
+        )}
       </div>
     </header>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { type DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
@@ -76,6 +77,7 @@ export default function TripPlanner() {
   const [datePopoverOpen, setDatePopoverOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
   const destinationWrapperRef = useRef<HTMLDivElement | null>(null);
   const destinationDropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -278,10 +280,14 @@ export default function TripPlanner() {
           </p>
           <p className="flex flex-wrap items-center gap-1 md:gap-2">
             with ₦{" "}
-            <span className="inline-block min-w-[100px] max-w-[100px] align-middle md:min-w-[140px] md:max-w-[140px]">
-              <Input
+            <span className="inline-grid items-center align-middle relative max-w-[9ch] overflow-hidden">
+              <span className="col-start-1 row-start-1 opacity-0 whitespace-pre px-0 text-xl md:text-3xl font-medium leading-snug invisible font-ibm">
+                {values.budget || "budget"}
+              </span>
+              <input
                 placeholder="budget"
                 value={values.budget}
+                size={1}
                 onChange={(e) => {
                   const raw = e.target.value
                     .replace(/,/g, "")
@@ -293,7 +299,7 @@ export default function TripPlanner() {
                   const formatted = Number(raw).toLocaleString("en-NG");
                   setValues((prev) => ({ ...prev, budget: formatted }));
                 }}
-                className="h-8 md:h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:border-none focus-visible:ring-0 w-auto text-xl md:text-3xl font-medium leading-snug"
+                className="col-start-1 row-start-1 w-full min-w-0 h-8 md:h-10 shadow-none border-none bg-transparent px-0 text-orange-500 placeholder:text-gray-300 focus:outline-none focus:border-none focus:ring-0 text-xl md:text-3xl font-medium leading-snug font-ibm"
               />
             </span>
             , starting
@@ -369,7 +375,27 @@ export default function TripPlanner() {
           </p>
         </div>
 
-        <Button className="w-full md:w-auto rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white">
+        <Button
+          onClick={() => {
+            if (
+              !values.destination ||
+              !values.budget ||
+              !values.dates ||
+              !values.days
+            )
+              return;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as any).scrollTo(0, 0);
+            navigate("/chat", { state: values });
+          }}
+          disabled={
+            !values.destination ||
+            !values.budget ||
+            !values.dates ||
+            !values.days
+          }
+          className="w-full md:w-auto rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           Let&apos;s go!
         </Button>
 

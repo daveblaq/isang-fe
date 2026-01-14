@@ -8,6 +8,7 @@ import Auth from "@/pages/Auth";
 import Notifications from "@/pages/Notifications";
 import Favorites from "@/pages/Favorites";
 import Inspiration from "@/pages/Inspiration";
+import TripChat from "@/pages/TripChat";
 import AuthLayout from "./components/layouts/auth-layout";
 
 function App() {
@@ -69,6 +70,10 @@ function App() {
               <Inspiration />
             </DashLayout>
           }
+        />
+        <Route
+          path="/chat"
+          element={<TripChat />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

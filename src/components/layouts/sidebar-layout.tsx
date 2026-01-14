@@ -7,9 +7,11 @@ import BottomNav from "@/components/common/bottom-nav";
 export default function DashLayout({
   children,
   title,
+  headerContent,
 }: {
   children: React.ReactNode;
   title?: string;
+  headerContent?: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
@@ -22,6 +24,7 @@ export default function DashLayout({
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
             title={title}
+            customContent={headerContent}
           />
 
           <main className="flex-1 overflow-y-auto bg-white px-4 pb-20 pt-4 md:px-6 md:pb-8 md:pt-4">
