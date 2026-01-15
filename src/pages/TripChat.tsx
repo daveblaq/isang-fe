@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import {useLocation} from "react-router-dom";
 import {Button} from "@/components/ui/button";
-import {Paperclip, Mic, ArrowUp, ChevronDown, Share2, MapPin, ChevronsLeft, ChevronsRight, SlidersHorizontal} from "lucide-react";
+import {Paperclip, Mic, ArrowUp, ChevronDown, Share2, MapPin, ChevronsLeft, ChevronsRight, SlidersHorizontal, Mountain, Palmtree, Utensils, Library, Bed, Footprints, Check} from "lucide-react";
+import {motion, AnimatePresence} from "framer-motion";
+import {GoogleMap, useLoadScript, OverlayView} from "@react-google-maps/api";
 import DashLayout from "@/components/layouts/sidebar-layout";
 
 // Mock data based on the image
@@ -41,11 +43,122 @@ const FOOD = [
   },
 ];
 
+const CHECKPOINTS = [
+  {
+    id: 1,
+    title: "Table Mountain",
+    type: "Nature & Hiking",
+    icon: <Mountain className="w-3.5 h-3.5" />,
+  image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80",
+    lat: -33.9628,
+    lng: 18.4098,
+    details: "Iconic flat-topped mountain offering panoramic city views.",
+    rating: "4.9"
+  },
+  {
+    id: 2,
+    title: "V&A Waterfront",
+    type: "Shopping & Food",
+    icon: <Utensils className="w-3.5 h-3.5" />,
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80",
+    lat: -33.9025,
+    lng: 18.4187,
+    details: "Bustling harbor with restaurants, shops, and entertainment.",
+    rating: "4.7"
+  },
+  {
+    id: 3,
+    title: "Mount Nelson Hotel",
+    type: "Stay",
+    icon: <Bed className="w-3.5 h-3.5" />,
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80",
+    lat: -33.9352,
+    lng: 18.4116,
+    details: "Famous pink luxury hotel at the foot of Table Mountain.",
+    rating: "4.8"
+  },
+  {
+    id: 4,
+    title: "Camps Bay Beach",
+    type: "Beach",
+    icon: <Palmtree className="w-3.5 h-3.5" />,
+    image: "https://images.unsplash.com/photo-1566438480900-0609be27a4be?auto=format&fit=crop&w=300&q=80",
+    lat: -33.9512,
+    lng: 18.3777,
+    details: "Trendy beach known for its white sand and palm-lined strip.",
+    rating: "4.6"
+  },
+  {
+    id: 5,
+    title: "Zeitz MOCAA",
+    type: "Museum",
+    icon: <Library className="w-3.5 h-3.5" />,
+    image: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=300&q=80",
+    lat: -33.9070,
+    lng: 18.4230,
+    details: "Contemporary African art museum in a converted silo.",
+    rating: "4.5"
+  },
+  {
+    id: 6,
+    title: "Boulders Beach",
+    type: "Nature",
+    icon: <Footprints className="w-3.5 h-3.5" />,
+    image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=300&q=80",
+    lat: -34.1975,
+    lng: 18.4506,
+    details: "Sheltered beach famous for its colony of African penguins.",
+    rating: "4.8"
+  },
+  {
+    id: 7,
+    title: "Kirstenbosch Garden",
+    type: "Nature & Park",
+    icon: <Palmtree className="w-3.5 h-3.5" />,
+  image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80",
+    lat: -33.9884,
+    lng: 18.4319,
+    details: "Acclaimed botanical garden celebrating indigenous flora.",
+    rating: "4.9"
+  }
+];
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%'
+};
+
+const center = {
+  lat: -33.9628,
+  lng: 18.4098
+};
+
+const mapOptions = {
+  disableDefaultUI: false,
+  zoomControl: true,
+  mapTypeControl: false,
+  streetViewControl: false,
+  fullscreenControl: false,
+  styles: [
+    {
+      featureType: "all",
+      elementType: "geometry",
+      stylers: [{ saturation: -20 }]
+    }
+  ]
+};
+
 export default function TripChat() {
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isMapFull, setIsMapFull] = useState(false);
+  const [hoveredCheckpointId, setHoveredCheckpointId] = useState<number | null>(null);
+  const [cardPositions, setCardPositions] = useState<Record<number, {vertical: 'top' | 'bottom', horizontal: 'left' | 'center' | 'right'}>>({});
+  
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ""
+  });
   
   // Extract state. Default to Cape Town if accessed directly for demo purposes
   const { destination = "Cape Town", budget = "46.5M", dates = "Aug 18-21", days = "3" } = location.state || {};
@@ -85,7 +198,7 @@ export default function TripChat() {
             >
                 <MapPin className="w-4 h-4" />
                 Checkpoints 
-                <span className="bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full ml-1">0</span>
+                <span className="bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full ml-1">{CHECKPOINTS.length}</span>
             </Button>
         </div>
     </div>
@@ -223,7 +336,7 @@ export default function TripChat() {
 
         {/* Map - Fixed sibling on right half */}
         <div 
-          className={`h-full bg-white border-l border-gray-200 shadow-2xl transition-all duration-500 ease-in-out relative ${
+          className={`h-full bg-white border-l border-gray-200 shadow-sm transition-all duration-500 ease-in-out relative ${
             isMapOpen ? (isMapFull ? 'w-full opacity-100' : 'w-1/2 opacity-100') : 'w-0 opacity-0 overflow-hidden'
           }`}
         >
@@ -247,28 +360,210 @@ export default function TripChat() {
               <SlidersHorizontal className="w-5 h-5 text-gray-900" />
             </button>
           </div>
-          
-          {/* Map Container */}
-          <div className="flex-1 relative bg-gray-50">
-              <iframe
-                title="map-view"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=18.3772,-34.0547,18.4772,-33.9547&layer=mapnik&marker=-34.0047,18.4272"
-                className="w-full h-full border-0"
-              />
-              
-              {/* Map Controls Overlay */}
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
-                <button className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
-                  <span className="text-gray-700 font-medium">+</span>
-                </button>
-                <button className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
-                  <span className="text-gray-700 font-medium">−</span>
-                </button>
-              </div>
+          {/* Map Container - Real Google Maps with Accurate Coordinates */}
+          <div className="flex-1 relative bg-[#E5E7EB] overflow-hidden border-[6px] border-white shadow-sm map-container-boundary">
+              {!isLoaded ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div className="text-gray-500 text-sm">Loading map...</div>
+                </div>
+              ) : (
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={center}
+                  zoom={12}
+                  options={mapOptions}
+                >
+                  {CHECKPOINTS.map((checkpoint) => (
+                    <OverlayView
+                      key={checkpoint.id}
+                      position={{ lat: checkpoint.lat, lng: checkpoint.lng }}
+                      mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                    >
+                      <div 
+                        className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${hoveredCheckpointId === checkpoint.id ? 'z-[60]' : 'z-10'}`}
+                        onMouseEnter={() => setHoveredCheckpointId(checkpoint.id)}
+                        onMouseLeave={() => setHoveredCheckpointId(null)}
+                      >
+                        <div className="relative group cursor-pointer">
+                          {/* Marker Label - Active state styling */}
+                          <motion.div 
+                            className={`flex items-center gap-1.5 shadow-lg rounded-full px-2.5 py-1 border whitespace-nowrap ${
+                              hoveredCheckpointId === checkpoint.id 
+                                ? 'bg-black border-black' 
+                                : 'bg-white border-gray-100'
+                            }`}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          >
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                              hoveredCheckpointId === checkpoint.id 
+                                ? 'bg-white text-black' 
+                                : 'bg-gray-100 text-gray-700'
+                            }`}>
+                              {checkpoint.icon}
+                            </div>
+                            <div className="w-4 h-4 rounded-full bg-[#FF5A1F] flex items-center justify-center text-white shrink-0">
+                              <Check className="w-2.5 h-2.5 stroke-[3]" />
+                            </div>
+                            <span className={`text-xs font-bold pr-1 ${
+                              hoveredCheckpointId === checkpoint.id 
+                                ? 'text-white' 
+                                : 'text-gray-900'
+                            }`}>
+                              {checkpoint.title}
+                            </span>
+                          </motion.div>
+
+                          {/* Popup Card - Google Maps Standard Boundary Detection */}
+                          <AnimatePresence>
+                            {hoveredCheckpointId === checkpoint.id && (() => {
+                              // Get or initialize position for this checkpoint
+                              const savedPosition = cardPositions[checkpoint.id];
+                              const position = savedPosition || { vertical: 'bottom', horizontal: 'center' };
+                              
+                              return (
+                                <motion.div
+                                  initial={{ opacity: 0, y: position.vertical === 'bottom' ? -10 : 10, scale: 0.95 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  exit={{ opacity: 0, y: position.vertical === 'bottom' ? -10 : 10, scale: 0.95 }}
+                                  transition={{ duration: 0.2 }}
+                                  className={`absolute w-[320px] bg-white rounded-[12px] shadow-xl overflow-hidden z-[70] pointer-events-none border border-gray-200 ${
+                                    position.vertical === 'bottom' ? 'bottom-full mb-3' : 'top-full mt-3'
+                                  } ${
+                                    position.horizontal === 'left' ? 'left-0' : 
+                                    position.horizontal === 'right' ? 'right-0' : 
+                                    'left-1/2 -translate-x-1/2'
+                                  }`}
+                                  onAnimationComplete={() => {
+                                    // Google Maps-style boundary detection
+                                    const cardElement = document.querySelector(`[data-card-id="${checkpoint.id}"]`) as HTMLElement;
+                                    const mapContainer = document.querySelector('.map-container-boundary') as HTMLElement;
+                                    
+                                    if (!cardElement || !mapContainer) return;
+                                    
+                                    const cardRect = cardElement.getBoundingClientRect();
+                                    const mapRect = mapContainer.getBoundingClientRect();
+                                    
+                                    // Define strict safe zones for UI elements
+                                    const SAFE_ZONES = {
+                                      top: 90,      // Floating header controls
+                                      bottom: 90,   // Checkpoint counter
+                                      left: 24,     // Side margin
+                                      right: 24     // Side margin
+                                    };
+                                    
+                                    // Calculate available space in each direction
+                                    const availableSpace = {
+                                      top: cardRect.top - (mapRect.top + SAFE_ZONES.top),
+                                      bottom: (mapRect.bottom - SAFE_ZONES.bottom) - cardRect.bottom,
+                                      left: cardRect.left - (mapRect.left + SAFE_ZONES.left),
+                                      right: (mapRect.right - SAFE_ZONES.right) - cardRect.right
+                                    };
+                                    
+                                    // Determine optimal position
+                                    let optimalVertical: 'top' | 'bottom' = position.vertical;
+                                    let optimalHorizontal: 'left' | 'center' | 'right' = position.horizontal;
+                                    
+                                    // Vertical positioning: Choose side with more space
+                                    if (availableSpace.top < 0 && availableSpace.bottom >= 0) {
+                                      // Overflowing top, switch to bottom
+                                      optimalVertical = 'top';
+                                    } else if (availableSpace.bottom < 0 && availableSpace.top >= 0) {
+                                      // Overflowing bottom, switch to top
+                                      optimalVertical = 'bottom';
+                                    } else if (availableSpace.top < 0 && availableSpace.bottom < 0) {
+                                      // Overflowing both sides - choose side with less overflow
+                                      optimalVertical = Math.abs(availableSpace.top) < Math.abs(availableSpace.bottom) ? 'bottom' : 'top';
+                                    }
+                                    
+                                    // Horizontal positioning: Ensure card stays within bounds
+                                    const centerWouldFit = availableSpace.left >= 0 && availableSpace.right >= 0;
+                                    
+                                    if (!centerWouldFit) {
+                                      if (availableSpace.left < 0) {
+                                        // Overflowing left, align to left edge
+                                        optimalHorizontal = 'left';
+                                      } else if (availableSpace.right < 0) {
+                                        // Overflowing right, align to right edge
+                                        optimalHorizontal = 'right';
+                                      }
+                                    } else if (centerWouldFit && optimalHorizontal !== 'center') {
+                                      // Has space to center
+                                      optimalHorizontal = 'center';
+                                    }
+                                    
+                                    // Update position if changed
+                                    if (optimalVertical !== position.vertical || optimalHorizontal !== position.horizontal) {
+                                      setCardPositions(prev => ({
+                                        ...prev,
+                                        [checkpoint.id]: { 
+                                          vertical: optimalVertical, 
+                                          horizontal: optimalHorizontal 
+                                        }
+                                      }));
+                                    }
+                                  }}
+                                  data-card-id={checkpoint.id}
+                                >
+                                {/* Image with floating action buttons */}
+                                <div className="relative h-[200px] w-full overflow-hidden">
+                                  <img src={checkpoint.image} alt={checkpoint.title} className="w-full h-full object-cover" />
+                                  
+                                  {/* Floating action buttons */}
+                                  <div className="absolute top-4 right-4 flex gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center">
+                                      <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                      </svg>
+                                    </div>
+                                    <div className="w-7 h-7 rounded-full bg-[#FF5A1F] shadow-lg flex items-center justify-center">
+                                      <Check className="w-4 h-4 text-white stroke-[2.5]" />
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Content */}
+                                <div className="p-3 rounded-tr-[12px] rounded-tl-[12px] overflow-hidden">
+                                  {/* Title and Rating */}
+                                  <div className="flex items-start justify-between mb-3">
+                                    <h3 className="text-sm font-semibold text-gray-900 leading-tight flex-1">{checkpoint.title}</h3>
+                                    <div className="flex items-center gap-1 ml-3 shrink-0">
+                                      <span className="text-gray-500">★</span>
+                                      <span className="text-xs font-medium text-gray-500">{checkpoint.rating}</span>
+                                      <span className="text-xs text-gray-500">(637k)</span>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Category */}
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-5 h-5 text-gray-600">
+                                      {checkpoint.icon}
+                                    </div>
+                                    <span className="text-xs font-regular text-gray-500">{checkpoint.type}</span>
+                                  </div>
+                                  
+                                  {/* Location */}
+                                  <p className="text-xs text-gray-500 mb-3">Cape Town, South Africa</p>
+                                  
+                                  {/* Description */}
+                                  <p className="text-xs text-black leading-relaxed line-clamp-3">
+                                    {checkpoint.details}
+                                  </p>
+                                </div>
+                                </motion.div>
+                              );
+                            })()}
+                          </AnimatePresence>
+                        </div>
+                      </div>
+                    </OverlayView>
+                  ))}
+                </GoogleMap>
+              )}
               
               {/* Checkpoint Counter */}
-              <div className="absolute bottom-4 left-4 bg-white rounded-full px-4 py-2 shadow-lg">
-                <span className="text-sm font-medium text-gray-700">0 checkpoints</span>
+              <div className="absolute bottom-4 left-4 bg-white rounded-full px-4 py-2 shadow-lg z-[100] pointer-events-none">
+                <span className="text-sm font-medium text-gray-700">{CHECKPOINTS.length} checkpoints</span>
               </div>
             </div>
           </div>
