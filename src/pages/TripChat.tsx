@@ -5,6 +5,7 @@ import { ChevronDown, Share2, MapPin } from "lucide-react";
 import DashLayout from "@/components/layouts/sidebar-layout";
 import InputArea from "@/components/chat-screen/input-area";
 import MapView from "@/components/chat-screen/map-view";
+import ItineraryDrawer from "@/components/chat-screen/itinerary-drawer";
 import { STAYS, FOOD, CHECKPOINTS } from "@/data/trip-data";
 
 
@@ -12,6 +13,7 @@ export default function TripChat() {
 	const location = useLocation();
 	const [isMapOpen, setIsMapOpen] = useState(false);
 	const [isMapFull, setIsMapFull] = useState(false);
+	const [isItineraryOpen, setIsItineraryOpen] = useState(false);
 
 	// Extract state. Default to Cape Town if accessed directly for demo purposes
 	const { destination = "Cape Town", budget = "46.5M", dates = "Aug 18-21", days = "3" } = location.state || {};
@@ -243,7 +245,11 @@ export default function TripChat() {
 										</div>
 										{/* Show or Edit Itinerary Button */}
 										<div className="mt-10">
-											<Button variant="outline" className="py-1.5 rounded-full text-xs text-black px-2 font-medium border border-gray-300">
+											<Button
+												variant="outline"
+												className="py-1.5 rounded-full text-xs text-black px-2 font-medium border border-gray-300"
+												onClick={() => setIsItineraryOpen(true)}
+											>
 												Show or edit itinerary
 											</Button>
 										</div>
@@ -267,6 +273,12 @@ export default function TripChat() {
 					checkpoints={CHECKPOINTS}
 				/>
 			</div>
+
+			{/* Itinerary Drawer */}
+			<ItineraryDrawer
+				isOpen={isItineraryOpen}
+				onClose={() => setIsItineraryOpen(false)}
+			/>
 		</DashLayout>
 	);
 }
