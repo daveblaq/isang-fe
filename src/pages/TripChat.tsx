@@ -227,7 +227,7 @@ export default function TripChat() {
             
             {/* AI Response */}
             <div className="flex gap-4 items-start max-w-full">
-                <div className="w-[32px] h-[32px] rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="w-[32px] h-[32px] flex items-center justify-center flex-shrink-0 mt-1">
                     <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src='https://placehold.co/20x20?text=AI'} /> 
                 </div>
                 
@@ -295,6 +295,100 @@ export default function TripChat() {
                             <span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
                                 Sources ~ Booking.com, agoda, Reddit
                             </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {/* User Message - Requesting Itinerary */}
+            <div className="flex justify-end">
+                <div className="bg-[#FFF9F5] text-gray-900 px-5 py-3 rounded-[20px] rounded-tr-sm max-w-[80%] md:max-w-[70%] text-sm md:text-base leading-relaxed">
+                    Yes please, draft an itinerary for me
+                </div>
+            </div>
+            
+            {/* AI Response - Draft Itinerary */}
+            <div className="flex gap-4 items-start max-w-full">
+                <div className="w-[32px] h-[32px] flex items-center justify-center flex-shrink-0 mt-1">
+                    <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src='https://placehold.co/20x20?text=AI'} /> 
+                </div>
+                
+                <div className="flex-1 space-y-6">
+                    {/* Day 1 */}
+                    <div className="space-y-3">
+                        <div className="bg-[#E8EAED] px-4 py-2 rounded-lg">
+                            <h3 className="font-semibold text-sm text-gray-900">Day 1: Arrival & Oceanfront Welcome</h3>
+                        </div>
+                        
+                        <div className="bg-[#F9FAFB] p-4 rounded-lg border border-[#EDF0F6] space-y-3 text-sm text-gray-700 leading-relaxed">
+                            <p>Welcome to Cape Town — where mountains meet the sea.</p>
+                            <p>Arrive at Cape Town International Airport, and head to your boutique accommodation at The Marly Boutique Hotel & Spa, perched above Camps Bay Beach with sweeping views of the Atlantic.</p>
+                            <p>After settling in, take a sunset walk along Camps Bay Promenade and grab dinner at Paranga — a stylish beachfront restaurant serving local seafood with a touch of glam.</p>
+                            
+                            {/* Relaxation Tip */}
+                            <div className="bg-[#E8F4FD] border border-[#B3D9F2] rounded-lg p-3 mt-3">
+                                <div className="flex items-start gap-2">
+                                    <span className="text-xs font-medium text-[#404040] bg-white px-2 py-0.5 rounded-full border border-gray-300">Relaxation Tip</span>
+                                </div>
+                                <p className="text-sm text-gray-700 mt-2">Order a glass of South African Sauvignon Blanc while watching the sun dip behind the Twelve Apostles</p>
+                            </div>
+                            
+                            {/* Cost Estimate */}
+                            <div className="bg-[#FCE8F3] border border-[#F8BBD0] rounded-lg p-3 mt-3">
+                                <div className="flex items-start gap-2">
+                                    <span className="text-xs font-medium text-[#404040] bg-white px-2 py-0.5 rounded-full border border-gray-300">Estimated Spend as of 1st 12.2025</span>
+                                </div>
+                                <p className="text-sm font-semibold text-gray-900 mt-2">₦1.8M <span className="font-normal text-gray-600">— mostly on hotel stay, airport transfer, and dinner.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Day 2 */}
+                    <div className="space-y-3">
+                        <div className="bg-[#E8EAED] px-4 py-2 rounded-lg">
+                            <h3 className="font-semibold text-sm text-gray-900">Day 2: Table Mountain, Culture & Local Flavours</h3>
+                        </div>
+                        
+                        <div className="bg-[#F9FAFB] p-4 rounded-lg border border-[#EDF0F6] space-y-3 text-sm text-gray-700 leading-relaxed">
+                            <p>Rise early for a cable car ride up Table Mountain — weather permitting. The views are iconic, and it's a must-do.</p>
+                            <p>By noon, head to the Bo-Kaap neighborhood to explore its colorful streets and learn about Cape Malay culture. Join a cooking class to try your hand at making traditional bobotie or samoosas</p>
+                            
+                            {/* Relaxation Tip */}
+                            <div className="bg-[#E8F4FD] border border-[#B3D9F2] rounded-lg p-3 mt-3">
+                                <div className="flex items-start gap-2">
+                                    <span className="text-xs font-medium text-[#404040] bg-white px-2 py-0.5 rounded-full border border-gray-300">Relaxation Tip</span>
+                                </div>
+                                <p className="text-sm text-gray-700 mt-2">Take a leisurely stroll through the Company's Garden before heading back</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Day 3 */}
+                    <div className="space-y-3">
+                        <div className="bg-[#E8EAED] px-4 py-2 rounded-lg">
+                            <h3 className="font-semibold text-sm text-gray-900">Day 3: Penguins, Wine & Departure Prep</h3>
+                        </div>
+                        
+                        <div className="bg-[#F9FAFB] p-4 rounded-lg border border-[#EDF0F6] space-y-3 text-sm text-gray-700 leading-relaxed">
+                            <p>Start your day with a visit to Boulders Beach to see the African penguins — they're adorable and surprisingly chill.</p>
+                            <p>On your way back, stop at a Constantia wine estate (Klein Constantia or Groot Constantia) for a tasting session. Pair your wine with a cheese platter and soak in the vineyard views.</p>
+                            <p>Return to your hotel, freshen up, and enjoy a final dinner at The Pot Luck Club — a trendy spot with tapas-style dishes and panoramic city views.</p>
+                            
+                            {/* Relaxation Tip */}
+                            <div className="bg-[#E8F4FD] border border-[#B3D9F2] rounded-lg p-3 mt-3">
+                                <div className="flex items-start gap-2">
+                                    <span className="text-xs font-medium text-[#404040] bg-white px-2 py-0.5 rounded-full border border-gray-300">Relaxation Tip</span>
+                                </div>
+                                <p className="text-sm text-gray-700 mt-2">Book a sunset spa session at your hotel before dinner</p>
+                            </div>
+                            
+                            {/* Cost Estimate */}
+                            <div className="bg-[#FCE8F3] border border-[#F8BBD0] rounded-lg p-3 mt-3">
+                                <div className="flex items-start gap-2">
+                                    <span className="text-xs font-medium text-[#404040] bg-white px-2 py-0.5 rounded-full border border-gray-300">Total Trip Estimate</span>
+                                </div>
+                                <p className="text-sm font-semibold text-gray-900 mt-2">₦6.5M <span className="font-normal text-gray-600">— including accommodation, activities, dining, and transport.</span></p>
+                            </div>
                         </div>
                     </div>
                 </div>
