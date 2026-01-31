@@ -132,7 +132,9 @@ export default function ItineraryTab({ title }: { title: string }) {
 					onClick={() => toggleDay(1)}
 					className="w-full flex items-center gap-2 p-0 mb-4"
 				>
-					<ChevronDown className={`w-4 h-4 transition-transform text-gray-600 ${expandedDay === 1 ? 'rotate-180' : ''}`} />
+					<div className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+						<ChevronDown className={`w-5 h-5 transition-transform text-gray-600 ${expandedDay === 1 ? 'rotate-180' : ''}`} />
+					</div>
 					<span className="text-sm font-semibold text-gray-900">Day 1 Arrival & Cultural Exploration</span>
 					<span className="text-xs text-gray-500">Thu, Aug 18</span>
 				</button>
@@ -141,7 +143,7 @@ export default function ItineraryTab({ title }: { title: string }) {
 					<div className="space-y-0">
 						{day1Activities.map((activity, index) => (
 							<div key={activity.id} className="relative ">
-								<div className="flex gap-3 p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+								<div className="flex gap-3 p-3 bg-white border border-gray-200 rounded-lg shadown-sm hover:shadow-md transition-shadow">
 									{activity.image ? (
 										<img
 											src={activity.image}
@@ -231,7 +233,9 @@ export default function ItineraryTab({ title }: { title: string }) {
 					onClick={() => toggleDay(2)}
 					className="w-full flex items-center gap-2 p-0 mb-4"
 				>
-					<ChevronDown className={`w-4 h-4 transition-transform text-gray-600 ${expandedDay === 2 ? 'rotate-180' : ''}`} />
+					<div className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+						<ChevronDown className={`w-5 h-5 transition-transform text-gray-600 ${expandedDay === 2 ? 'rotate-180' : ''}`} />
+					</div>
 					<span className="text-sm font-semibold text-gray-900">Day 2 Nature & Design</span>
 					<span className="text-xs text-gray-500">Fri, Mar 20</span>
 				</button>

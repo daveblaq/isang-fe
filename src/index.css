@@ -29,4 +29,19 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .main-index {
+    z-index: 10000;
+  }
+  .blur-loading {
+    @apply animate-pulse bg-slate-200;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
 }

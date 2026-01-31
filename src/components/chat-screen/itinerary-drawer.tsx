@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/drawer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ItineraryTab from "./itinerary-tab";
+import BookingsTab from "./bookings-tab";
 
 interface ItineraryDrawerProps {
 	isOpen: boolean;
@@ -21,7 +22,7 @@ export default function ItineraryDrawer({ isOpen, onClose }: ItineraryDrawerProp
 		<Drawer open={isOpen} onOpenChange={onClose}>
 			<DrawerContent
 				className="transition-all duration-500 ease-in-out"
-				style={{ width: isFullWidth ? '100%' : '50%' }}
+				style={{ width: isFullWidth ? '100%' : '43%' }}
 			>
 				<div className="flex flex-col h-full overflow-hidden">
 					{/* Header Section (Static) */}
@@ -123,10 +124,8 @@ export default function ItineraryDrawer({ isOpen, onClose }: ItineraryDrawerProp
 							</div>
 						</TabsContent>
 
-						<TabsContent value="bookings" className="flex-1 overflow-y-auto p-6">
-							<div className="flex items-center justify-center h-full text-gray-500">
-								Bookings View Coming Soon
-							</div>
+						<TabsContent value="bookings" className="flex-1 overflow-hidden focus-visible:outline-none data-[state=active]:flex data-[state=active]:flex-col m-0 p-0">
+							<BookingsTab />
 						</TabsContent>
 					</Tabs>
 				</div>

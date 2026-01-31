@@ -410,9 +410,9 @@ export default function TripPlanner() {
       <div className="md:flex hidden items-center justify-center order-first md:order-last">
         <div className="w-full">
           {!values.destination ||
-          !values.budget ||
-          !values.dates ||
-          !values.days ? (
+            !values.budget ||
+            !values.dates ||
+            !values.days ? (
             <iframe
               title="map-preview"
               src="https://www.openstreetmap.org/export/embed.html?bbox=-2.308%2C46.5%2C-0.5%2C47.5&layer=mapnik"

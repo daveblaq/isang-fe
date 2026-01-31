@@ -18,7 +18,7 @@ export const menuGroups: menuGroupsType[] = [
     menuItems: [
       {
         icon: PiHouseBold,
-        label: "Home",
+        label: "Discover",
         route: "/dashboard/talent",
       },
       {

@@ -34,7 +34,7 @@ type SidebarProps = {
 };
 
 const primaryNav = [
-  { label: "Discover", icon: TbWorldSearch, to: "/" },
+  { label: "Discover", icon: TbWorldSearch, to: "/discover" },
   { label: "Inspiration", icon: TbCloudBolt, to: "/inspiration" },
   { label: "Favorites", icon: TbHeart, to: "/favorites" },
   { label: "Notification", icon: TbBell, to: "/notification" },
@@ -45,14 +45,13 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <>
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-screen w-[240px] flex-col border-r border-[#CFD9E8] bg-white transition-transform duration-300 md:w-[260px] lg:static lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed left-0 top-0 z-40 flex h-screen w-[240px] flex-col border-r border-[#CFD9E8] bg-white transition-transform duration-300 md:w-[260px] lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between px-4 pt-4 md:px-5 md:pt-6">
           <div className="flex items-center gap-3">
-             <div className="w-[32px] h-[32px] rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-1">
-                <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src='https://placehold.co/20x20?text=AI'} /> 
+            <div className="w-[32px] h-[32px] rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-1">
+              <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src = 'https://placehold.co/20x20?text=AI'} />
             </div>
             <Text variant="h5" className="font-semibold text-slate-900">
               Isang
@@ -67,13 +66,14 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
 
         <div className="px-4 pt-4 md:px-5 md:pt-6">
-          <Button className="flex w-full items-center justify-center rounded-[8px] border border-[#FFE6D5] bg-[#FFF9F5] px-3 py-2.5 text-sm font-semibold text-[#E62E05] font-ibm shadow-none md:px-4 md:py-3 md:text-base">
-            <span className="flex items-center gap-2">
-              <TbRouteSquare className="h-4 w-4 text-[#E62E05] md:h-5 md:w-5" />
-              <span className="hidden sm:inline">Plan a trip</span>
-              <span className="sm:hidden">Plan</span>
-            </span>
-          </Button>
+          <NavLink to="/">
+            <Button className="flex w-full items-center justify-center rounded-[8px] border border-[#FFE6D5] bg-[#FFF9F5] px-3 py-2.5 text-sm font-semibold text-[#E62E05] font-ibm shadow-none md:px-4 md:py-3 md:text-base">
+              <span className="flex items-center gap-2">
+                <TbRouteSquare className="h-4 w-4 text-[#E62E05] md:h-5 md:w-5" />
+                <span>Plan a trip</span>
+              </span>
+            </Button>
+          </NavLink>
         </div>
 
         <nav className="hidden lg:flex mt-4 flex-col gap-1 px-2 md:mt-6 md:px-3">
@@ -290,9 +290,8 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
       </aside>
 
       <div
-        className={`fixed inset-0 z-30 bg-black/30 lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 z-30 bg-black/30 lg:hidden ${sidebarOpen ? "block" : "hidden"
+          }`}
         onClick={() => setSidebarOpen(false)}
       />
     </>

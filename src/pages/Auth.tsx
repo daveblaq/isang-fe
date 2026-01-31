@@ -8,12 +8,18 @@ import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
 import OtpBox from "@/components/ui/otp-box";
 
+import { useAuth } from "@/hooks/use-auth";
+
+import { useNavigate } from "react-router-dom";
+
 type EmailFormValues = { email: string };
 type CodeFormValues = { code: string };
 
 export default function Auth() {
   const [step, setStep] = useState<"email" | "code">("email");
   const [submittedEmail, setSubmittedEmail] = useState("");
+  const { register, verify, resendCode, isRegisterLoading, isVerifyLoading, isResendingCode } = useAuth();
+  const navigate = useNavigate();
 
   const emailForm = useForm<EmailFormValues>({
     defaultValues: { email: "" },
@@ -34,23 +40,47 @@ export default function Auth() {
     return () => clearInterval(timer);
   }, [step, resendTimer]);
 
-  const handleResend = () => {
-    if (resendTimer > 0) return;
-    setResendTimer(300);
-    // eslint-disable-next-line no-console
-    console.log("Resend code requested for", submittedEmail);
+  const handleResend = async () => {
+    if (resendTimer > 0 || isResendingCode) return;
+
+    try {
+      await resendCode.mutateAsync({ email: submittedEmail });
+      setResendTimer(300);
+    } catch (error) {
+      // Error is handled in the hook
+    }
   };
 
-  const handleEmailSubmit = (values: EmailFormValues) => {
-    setSubmittedEmail(values.email);
-    // eslint-disable-next-line no-console
-    console.log("Email step data", values);
-    setStep("code");
+  const handleEmailSubmit = async (values: EmailFormValues) => {
+    const sessionId = localStorage.getItem("isang_session_id");
+
+    try {
+      await register.mutateAsync({
+        email: values.email,
+        sessionId: sessionId,
+      });
+
+      setSubmittedEmail(values.email);
+      setStep("code");
+    } catch (error) {
+      // Error is handled in the hook
+    }
   };
 
-  const handleCodeSubmit = (values: CodeFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log("Verification step data", { email: submittedEmail, ...values });
+  const handleCodeSubmit = async (values: CodeFormValues) => {
+    const sessionId = localStorage.getItem("isang_session_id");
+
+    try {
+      await verify.mutateAsync({
+        email: submittedEmail,
+        code: values.code,
+        sessionId: sessionId,
+      });
+
+      navigate(-1);
+    } catch (error) {
+      // Error is handled in the hook
+    }
   };
 
   return (
@@ -107,10 +137,10 @@ export default function Auth() {
             </div>
             <Button
               type="submit"
-              disabled={!emailForm.watch("email")?.trim()}
+              disabled={!emailForm.watch("email")?.trim() || isRegisterLoading}
               className="w-full rounded-[8px] py-2.5 md:py-3.5 font-ibm text-sm md:text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
             >
-              Continue with email
+              {isRegisterLoading ? "Loading..." : "Continue with email"}
             </Button>
           </form>
           <div className="mt-2 md:mt-3">
@@ -154,24 +184,26 @@ export default function Auth() {
             <button
               type="button"
               onClick={handleResend}
-              disabled={resendTimer > 0}
+              disabled={resendTimer > 0 || isResendingCode}
               className="text-xs md:text-sm font-semibold text-[#FF5A1F] disabled:text-slate-400"
             >
-              {resendTimer > 0
-                ? `Resend code in ${Math.floor(resendTimer / 60)
+              {isResendingCode
+                ? "Resending..."
+                : resendTimer > 0
+                  ? `Resend code in ${Math.floor(resendTimer / 60)
                     .toString()
                     .padStart(2, "0")}:${(resendTimer % 60)
-                    .toString()
-                    .padStart(2, "0")}`
-                : "Resend code"}
+                      .toString()
+                      .padStart(2, "0")}`
+                  : "Resend code"}
             </button>
 
             <Button
               type="submit"
-              disabled={!codeForm.watch("code")}
+              disabled={!codeForm.watch("code") || isVerifyLoading}
               className="w-full rounded-[8px] py-2.5 md:py-3.5 font-ibm text-sm md:text-base font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#F0B8A7] bg-[#FF5A1F] hover:bg-[#ff7846]"
             >
-              Verify account
+              {isVerifyLoading ? "Verifying..." : "Verify account"}
             </Button>
           </form>
 

@@ -3,36 +3,66 @@ import { Mountain, Palmtree, Utensils, Library, Bed, Footprints } from "lucide-r
 export const STAYS = [
 	{
 		id: 1,
-		title: "The Marly Boutique Hotel - beachfront luxury with oce...",
+		title: "The Marly Boutique Hotel - beachfront luxury with ocean views",
 		image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80",
 	},
 	{
 		id: 2,
-		title: "Kloof Street Hotel - urban charm in the heart of Cape...",
+		title: "Kloof Street Hotel - urban charm in the heart of Cape Town",
 		image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80",
 	},
 	{
 		id: 3,
-		title: "Cloud 9 Boutique Hotel - affordable & scenic, with Ta...",
+		title: "Cloud 9 Boutique Hotel - affordable & scenic, with Table Mountain views",
 		image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=400&q=80",
+	},
+	{
+		id: 4,
+		title: "The Silo Hotel - iconic luxury in a historic grain silo building",
+		image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=400&q=80",
+	},
+	{
+		id: 5,
+		title: "One&Only Cape Town - ultra-luxury resort with private spa island",
+		image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80",
+	},
+	{
+		id: 6,
+		title: "Belmond Mount Nelson Hotel - the legendary pink lady of Cape Town",
+		image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=400&q=80",
 	},
 ];
 
 export const FOOD = [
 	{
 		id: 1,
-		title: "Kloof Street House - romantic, colonial-era dinin...",
+		title: "Kloof Street House - romantic, colonial-era dining experience",
 		image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80",
 	},
 	{
 		id: 2,
-		title: "The Pot Luck Club - trendy tapas & cocktails at the Old...",
+		title: "The Pot Luck Club - trendy tapas & cocktails at the Old Biscuit Mill",
 		image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=400&q=80",
 	},
 	{
 		id: 3,
-		title: "Codfather - Camps Bay seafood staple with fresh...",
+		title: "Codfather - Camps Bay seafood staple with fresh ocean picks",
 		image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80",
+	},
+	{
+		id: 4,
+		title: "La Colombe - award-winning fine dining with forest views",
+		image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=80",
+	},
+	{
+		id: 5,
+		title: "Gold Restaurant - authentic African culinary and cultural journey",
+		image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
+	},
+	{
+		id: 6,
+		title: "Belly of the Beast - intimate tasting menu with local seasonal focus",
+		image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80",
 	},
 ];
 

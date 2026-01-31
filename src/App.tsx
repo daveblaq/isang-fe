@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import DashLayout from "@/components/layouts/sidebar-layout";
 import CreatorSpace from "@/pages/CreatorSpace";
 import Home from "@/pages/Home";
+import Discover from "@/pages/Discover";
 import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
 import Notifications from "@/pages/Notifications";
@@ -10,16 +11,29 @@ import Favorites from "@/pages/Favorites";
 import Inspiration from "@/pages/Inspiration";
 import TripChat from "@/pages/TripChat";
 import AuthLayout from "./components/layouts/auth-layout";
+import SignupModal from "@/components/common/signup-modal";
+import { useSignupModal } from "@/hooks/use-signup-modal";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
+  const { isOpen, closeModal } = useSignupModal();
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
           element={
-            <DashLayout>
+            <DashLayout title="Plan a trip" mainClassName="flex-1 overflow-hidden bg-white">
               <Home />
+            </DashLayout>
+          }
+        />
+        <Route
+          path="/discover"
+          element={
+            <DashLayout>
+              <Discover />
             </DashLayout>
           }
         />
@@ -72,11 +86,13 @@ function App() {
           }
         />
         <Route
-          path="/chat"
+          path="/chat/:sessionId?"
           element={<TripChat />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <SignupModal open={isOpen} onOpenChange={closeModal} />
+      <Toaster />
     </BrowserRouter>
   );
 }

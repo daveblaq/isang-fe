@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   server: {
+    port: 3001,
     allowedHosts: [
       "fc00b037461f.ngrok-free.app",
       ".ngrok-free.app", // Allow all ngrok subdomains
