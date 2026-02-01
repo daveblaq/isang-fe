@@ -378,10 +378,7 @@ export default function TripPlanner() {
         <Button
           onClick={() => {
             if (
-              !values.destination ||
-              !values.budget ||
-              !values.dates ||
-              !values.days
+              !values.destination 
             )
               return;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -389,10 +386,7 @@ export default function TripPlanner() {
             navigate("/chat", { state: values });
           }}
           disabled={
-            !values.destination ||
-            !values.budget ||
-            !values.dates ||
-            !values.days
+            !values.destination
           }
           className="w-full md:w-auto rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
