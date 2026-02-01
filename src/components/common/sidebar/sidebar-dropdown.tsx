@@ -1,22 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SidebarDropdown = ({ item }: any) => {
-  const pathname = usePathname();
+  const location = useLocation();
 
   return (
     <>
       <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pt-3 space-y-2 pl-6">
-      {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {item.map((item: any, index: number) => (
           <li key={index}>
             <Link
-              href={item.route}
-              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-primary ${
-                pathname === item.route ? "text-white" : ""
-              }`}
+              to={item.route}
+              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-primary ${location.pathname === item.route ? "text-white" : ""
+                }`}
             >
               {item.label}
             </Link>

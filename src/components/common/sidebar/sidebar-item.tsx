@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */ 
-import Link from "next/link";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link, useLocation } from "react-router-dom";
 import SidebarDropdown from "./sidebar-dropdown";
-import { usePathname } from "next/navigation";
 
 interface SidebarItemProps {
   item: any;
@@ -16,11 +15,11 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProps) => {
     return setPageName(updatedPageName);
   };
 
-  const pathname = usePathname();
+  const location = useLocation();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const isActive = (item: any) => {
-    if (item.route === pathname) return true;
+    if (item.route === location.pathname) return true;
     if (item.children) {
       return item.children.some((child: any) => isActive(child));
     }
@@ -35,23 +34,20 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProps) => {
     <>
       <li>
         <Link
-          href={`${item.route}`}
+          to={`${item.route}`}
           onClick={handleClick}
-          className={`${
-            isItemActive ? " text-primary font-bold" : "text-[#667185] font-medium "
-          } group relative flex items-center gap-5 rounded-tl-sm rounded-bl-sm px-4 py-3 font-inter font-base  duration-300 ease-in-out `}
+          className={`${isItemActive ? " text-primary font-bold" : "text-[#667185] font-medium "
+            } group relative flex items-center gap-5 rounded-tl-sm rounded-bl-sm px-4 py-3 font-inter font-base  duration-300 ease-in-out `}
         >
           <Icon
-            className={`text-2xl  ${
-              isItemActive ? "text-primary" : "text-[#667185]"
-            }`}
+            className={`text-2xl  ${isItemActive ? "text-primary" : "text-[#667185]"
+              }`}
           />
           {item.label}
           {item.children && (
             <svg
-              className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                pageName === item.label.toLowerCase() && "rotate-180"
-              }`}
+              className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${pageName === item.label.toLowerCase() && "rotate-180"
+                }`}
               width="20"
               height="20"
               viewBox="0 0 20 20"
@@ -70,9 +66,8 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProps) => {
 
         {item.children && (
           <div
-            className={`translate transform overflow-hidden ${
-              pageName !== item.label.toLowerCase() && "hidden"
-            }`}
+            className={`translate transform overflow-hidden ${pageName !== item.label.toLowerCase() && "hidden"
+              }`}
           >
             <SidebarDropdown item={item.children} />
           </div>
