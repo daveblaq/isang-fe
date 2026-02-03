@@ -5,12 +5,20 @@ interface TypingEffectProps {
 	speed?: number;
 	onComplete?: () => void;
 	className?: string;
+	shouldType?: boolean;
 }
 
-export default function TypingEffect({ text, speed = 30, onComplete, className }: TypingEffectProps) {
-	const [displayedText, setDisplayedText] = useState("");
+export default function TypingEffect({ text, speed = 30, onComplete, className, shouldType = true }: TypingEffectProps) {
+	const [displayedText, setDisplayedText] = useState(shouldType ? "" : text);
 	const onCompleteRef = useRef(onComplete);
 	const hasCalledComplete = useRef(false);
+
+	// Reset state if shouldType changes
+	useEffect(() => {
+		if (!shouldType) {
+			setDisplayedText(text);
+		}
+	}, [shouldType, text]);
 
 	// Sync the ref with the latest onComplete callback
 	useEffect(() => {
@@ -18,6 +26,8 @@ export default function TypingEffect({ text, speed = 30, onComplete, className }
 	}, [onComplete]);
 
 	useEffect(() => {
+		if (!shouldType) return;
+
 		// Reset state when text changes
 		setDisplayedText("");
 		hasCalledComplete.current = false;
@@ -37,7 +47,7 @@ export default function TypingEffect({ text, speed = 30, onComplete, className }
 		}, speed);
 
 		return () => clearInterval(timer);
-	}, [text, speed]);
+	}, [text, speed, shouldType]);
 
 	return <div className={className}>{displayedText}</div>;
 }

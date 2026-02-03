@@ -1,7 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useMutationState } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useSignupModal } from "@/hooks/use-signup-modal";
 import { toast } from "@/components/ui/use-toast";
+
+export interface Message {
+  role: "user" | "assistant";
+  content: string;
+  timestamp: string;
+}
 
 interface ChatRequest {
   message: string;
@@ -19,19 +25,45 @@ interface ChatResponse {
   requiresSignup: boolean;
 }
 
+interface ChatHistoryResponse {
+  sessionId: string;
+  conversations: Message[];
+}
+
 export const useChat = () => {
   const { openModal } = useSignupModal();
+  const queryClient = useQueryClient();
+
+  const getChatHistory = useQuery({
+    queryKey: ["chatHistory"],
+    queryFn: async () => {
+      const savedSessionId = localStorage.getItem("isang_session_id");
+      if (!savedSessionId) return { sessionId: "", conversations: [] };
+
+      const response = await api.get<ChatHistoryResponse>("/chat", {
+        headers: {
+          "X-Session-Id": savedSessionId,
+        },
+      });
+      return response.data;
+    },
+    enabled: !!localStorage.getItem("isang_session_id"),
+  });
+
+  // Track global mutation state
+  const pendingMutations = useMutationState({
+    filters: { mutationKey: ["sendMessage"], status: "pending" },
+    select: (mutation) => mutation.state.variables as ChatRequest,
+  });
 
   const sendMessage = useMutation({
+    mutationKey: ["sendMessage"],
     mutationFn: async (payload: ChatRequest) => {
-      // Get session ID from localStorage
       const savedSessionId = localStorage.getItem("isang_session_id");
       
-      // For now, we assume user is a guest if no auth logic is implemented yet
-      // You can expand this once auth is ready
       const requestPayload: any = {
         message: payload.message,
-        isGuest: true, // As per instruction
+        isGuest: true,
       };
 
       if (savedSessionId) {
@@ -42,20 +74,18 @@ export const useChat = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      // Save sessionId for future requests
       if (data.sessionId) {
         localStorage.setItem("isang_session_id", data.sessionId);
       }
 
-      // Check for signup requirements
+      // Invalidate and refetch history
+      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
+
       if (data.conversationsRemaining === 0 || data.requiresSignup) {
         openModal();
       }
-
-      console.log("Chat Response:", data);
     },
     onError: (error: any) => {
-      // Show signup modal if limit is exceeded (status 429)
       if (error?.response?.status === 429) {
         openModal();
       } else {
@@ -66,12 +96,17 @@ export const useChat = () => {
           variant: "destructive",
         });
       }
-      console.error("Chat Error:", error);
     },
   });
 
+  const isSending = pendingMutations.length > 0;
+  const pendingMessage = pendingMutations[0]?.message;
+
   return {
     sendMessage,
-    isLoading: sendMessage.isPending,
+    messages: getChatHistory.data?.conversations || [],
+    isLoadingHistory: getChatHistory.isLoading,
+    isSending,
+    pendingMessage,
   };
 };

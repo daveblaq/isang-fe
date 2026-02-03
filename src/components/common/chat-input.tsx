@@ -7,20 +7,22 @@ interface ChatInputProps {
 	onSend?: (response: any) => void;
 	placeholder?: string;
 	className?: string;
+	disabled?: boolean;
 }
 
 export default function ChatInput({
 	onSend,
 	placeholder = "Ask me anything! 🌍",
-	className = ""
+	className = "",
+	disabled = false
 }: ChatInputProps) {
 	const [value, setValue] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
-	const { sendMessage, isLoading } = useChat();
+	const { sendMessage, isSending } = useChat();
 	const navigate = useNavigate();
 
 	const handleSend = async () => {
-		if (value.trim() && !isLoading) {
+		if (value.trim() && !isSending && !disabled) {
 			const currentMessage = value;
 			// Clear input immediately for better UX
 			setValue("");
@@ -83,11 +85,11 @@ export default function ChatInput({
 							e.stopPropagation();
 							handleSend();
 						}}
-						disabled={isLoading}
+						disabled={isSending || disabled}
 						className={`w-10 h-10 rounded-xl flex items-center justify-center text-white transition-colors ${value.trim() ? "bg-[#FF855F] hover:bg-[#FF5A1F]" : "bg-[#FFBDAD]"
-							} ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+							} ${isSending || disabled ? "opacity-70 cursor-not-allowed" : ""}`}
 					>
-						{isLoading ? (
+						{isSending ? (
 							<Loader2 className="w-5 h-5 animate-spin" />
 						) : (
 							<ArrowUp className="w-5 h-5" />
