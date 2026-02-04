@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { chatSections, tripSections } from "@/data/sidebarChats";
+import { tripSections } from "@/data/sidebarChats";
 import {
   logoutMenu,
   primaryUserMenu,
@@ -28,6 +28,7 @@ import {
 } from "@/data/sidebarUserMenu";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useChat } from "@/hooks/use-chat";
 
 type SidebarProps = {
   sidebarOpen: boolean;
@@ -43,7 +44,8 @@ const primaryNav = [
 ];
 
 const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
+  const { sessions, isLoadingHistory } = useChat();
   return (
     <>
       <aside
@@ -51,14 +53,14 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           }`}
       >
         <div className="flex items-center justify-between px-4 pt-4 md:px-5 md:pt-6">
-          <div className="flex items-center gap-3">
+          <NavLink to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-[32px] h-[32px] rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-1">
               <img src="/logo.svg" alt="AI" className="w-full h-full object-contain opacity-80" onError={(e) => e.currentTarget.src = 'https://placehold.co/20x20?text=AI'} />
             </div>
             <Text variant="h5" className="font-semibold text-slate-900">
               Isang
             </Text>
-          </div>
+          </NavLink>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="rounded-full border border-slate-200 px-2 py-1 text-sm text-slate-500 lg:hidden"
@@ -130,34 +132,43 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                 className="h-[250px] overflow-hidden md:h-[340px]"
               >
                 <div className="mt-2 space-y-2 overflow-y-auto pr-1 h-full">
-                  {chatSections.map((section) => (
-                    <div key={section.date}>
-                      <Text
-                        variant="span"
-                        className="text-xs text-black font-ibm font-semibold"
-                      >
-                        {section.date}
-                      </Text>
-                      <div className="mt-2 space-y-2">
-                        {section.items.map((item) => (
-                          <button
-                            key={item.id}
-                            className="flex w-full items-center gap-3 rounded-2x px-2 py-2 text-left transition"
-                          >
-                            <PiChatDotsBold className="h-5 w-5 text-gray-500" />
-                            <div>
-                              <Text
-                                variant="p"
-                                className="text-sm font-regular text-gray-500 font-ibm"
-                              >
-                                {item.title}
-                              </Text>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
+                  {!isLoadingHistory && sessions.length === 0 && (
+                    <div className="py-8 text-center">
+                      <Text variant="span" className="text-xs text-slate-400">No chat history yet</Text>
                     </div>
-                  ))}
+                  )}
+
+                  {isLoadingHistory && (
+                    <div className="py-8 text-center animate-pulse">
+                      <Text variant="span" className="text-xs text-slate-400">Loading history...</Text>
+                    </div>
+                  )}
+
+                  {sessions.map((session) => {
+                    const firstUserMessage = session.conversations.find(m => m.role === "user")?.content || "New Conversation";
+
+                    return (
+                      <NavLink
+                        key={session.sessionId}
+                        to={`/chat/${session.sessionId}`}
+                        onClick={() => setSidebarOpen(false)}
+                        className={({ isActive }) =>
+                          `flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition ${isActive ? "bg-slate-100" : "hover:bg-slate-50"
+                          }`
+                        }
+                      >
+                        <PiChatDotsBold className="h-4 w-4 text-gray-500 shrink-0" />
+                        <div className="min-w-0">
+                          <Text
+                            variant="p"
+                            className="text-sm font-regular text-gray-700 font-ibm truncate"
+                          >
+                            {firstUserMessage}
+                          </Text>
+                        </div>
+                      </NavLink>
+                    );
+                  })}
                 </div>
               </TabsContent>
               <TabsContent
@@ -209,7 +220,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                 <button className="flex w-full items-center gap-2 rounded-[8px] bg-[#F9FAFB] border border-slate-100 px-3 py-2 shadow-sm md:gap-3 md:px-4">
                   <Avatar className="h-8 w-8 border border-[#DDD6FE]">
                     <AvatarFallback className="bg-purple-500 text-white">
-                      S
+                      {user?.email?.charAt(0).toUpperCase() || "T"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
@@ -220,7 +231,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                       Traveler
                     </Text>
                     <Text variant="span" className="text-xs text-slate-500">
-                      Free
+                      {user?.email ? "Pro" : "Free"}
                     </Text>
                   </div>
                   <FiChevronDown className="ml-auto text-slate-500" />
@@ -236,15 +247,16 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="flex items-center gap-3 px-4 py-4">
                   <Avatar className="h-[36px] w-[36px] border border-[#DDD6FE]">
                     <AvatarFallback className="bg-purple-500 text-white">
-                      S
+                      {user?.email?.charAt(0).toUpperCase() || "T"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <Text
                       variant="p"
-                      className="text-sm font-semibold font-ibm text-slate-900"
+                      title={user?.email}
+                      className="text-sm font-semibold font-ibm text-slate-900 max-w-[160px] truncate"
                     >
-                      scvkett@isang.ai
+                      {user?.email}
                     </Text>
                     <Text
                       variant="span"
@@ -288,7 +300,10 @@ const Sidebar: FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                   ))}
                 </div>
                 <div className="border-t border-gray-300 px-4 py-3">
-                  <button className="flex w-full items-center gap-3 rounded-lg px-1 py-2 text-left text-sm font-semibold text-red-500 hover:bg-red-50">
+                  <button
+                    onClick={logout}
+                    className="flex w-full items-center gap-3 rounded-lg px-1 py-2 text-left text-sm font-semibold text-red-500 hover:bg-red-50"
+                  >
                     <logoutMenu.icon className="h-4 w-4" />
                     {logoutMenu.label}
                   </button>

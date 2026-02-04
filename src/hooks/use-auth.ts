@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { toast } from "@/components/ui/use-toast";
 
@@ -29,7 +29,26 @@ interface VerifyResponse {
   message: string;
 }
 
+export interface User {
+  userId: string;
+  email: string;
+  emailVerified: boolean;
+  createdAt: string;
+}
+
 export const useAuth = () => {
+  const queryClient = useQueryClient();
+
+  const user = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const response = await api.get<User>("/auth/me");
+      return response.data;
+    },
+    enabled: !!localStorage.getItem("access_token"),
+    retry: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
   const register = useMutation({
     mutationFn: async (payload: RegisterRequest) => {
       const response = await api.post<RegisterResponse>("/auth/register", payload);
@@ -64,6 +83,7 @@ export const useAuth = () => {
         if (data.sessionId) {
           localStorage.setItem("isang_session_id", data.sessionId);
         }
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       }
       console.log("Verification successful:", data);
     },
@@ -101,11 +121,21 @@ export const useAuth = () => {
 
   const isAuthenticated = !!localStorage.getItem("access_token");
 
+  const logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("isang_session_id");
+    queryClient.setQueryData(["currentUser"], null);
+    window.location.href = "/";
+  };
+
   return {
     register,
     verify,
     resendCode,
     isAuthenticated,
+    user: user.data,
+    isUserLoading: user.isLoading,
+    logout,
     isRegisterLoading: register.isPending,
     isVerifyLoading: verify.isPending,
     isResendingCode: resendCode.isPending,

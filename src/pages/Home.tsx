@@ -1,49 +1,51 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Sparkles, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import ChatInput from "@/components/common/chat-input";
+import { useChat } from "@/hooks/use-chat";
+import { useSignupModal } from "@/hooks/use-signup-modal";
 
 const SUGGESTIONS = [
 	{
 		id: 1,
 		title: "Explore hidden gems",
-		description: "I want to visit Morocco but avoid the typical tourist spots. Can you recommend some offbeat locations with",
+		description: "Discover secret waterfalls and local villages in Bali that aren't in the guidebooks.",
 		color: "border-[#C7E3E5]",
 		bg: "bg-white",
 	},
 	{
 		id: 2,
 		title: "Personalized hotel picks",
-		description: "I want to visit Morocco but avoid the typical tourist spots. Can you recommend some offbeat locations with",
+		description: "Find boutique stays in Paris that offer stunning Eiffel Tower views within my budget.",
 		color: "border-[#FFE7CC]",
 		bg: "bg-white",
 	},
 	{
 		id: 3,
 		title: "Cultural food tour",
-		description: "I want to visit Morocco but avoid the typical tourist spots. Can you recommend some offbeat locations with",
+		description: "Where can I find the most authentic street food in Tokyo, specifically for world-class ramen?",
 		color: "border-[#D1D5DB]",
 		bg: "bg-white",
 	},
 	{
 		id: 4,
 		title: "Oceanfront getaways",
-		description: "I want to visit Morocco but avoid the typical tourist spots. Can you recommend some offbeat locations with",
+		description: "Suggest the best secluded beaches in Greece for a peaceful summer vacation away from the crowds.",
 		color: "border-[#C7E3E5]",
 		bg: "bg-white",
 	},
 	{
 		id: 5,
 		title: "Mountain adventures",
-		description: "I want to visit Morocco but avoid the typical tourist spots. Can you recommend some offbeat locations with",
+		description: "Plan a 3-day hiking itinerary through the Swiss Alps with scenic overnight stop suggestions.",
 		color: "border-[#FFE7CC]",
 		bg: "bg-white",
 	},
 	{
 		id: 6,
 		title: "Art & Architecture",
-		description: "I want to visit Morocco but avoid the typical tourist spots. Can you recommend some offbeat locations with",
+		description: "Explore the best of Gaudí's architecture and hidden art galleries in the Gothic Quarter of Barcelona.",
 		color: "border-[#D1D5DB]",
 		bg: "bg-white",
 	},
@@ -51,6 +53,27 @@ const SUGGESTIONS = [
 
 export default function Home() {
 	const [activePage, setActivePage] = useState(0);
+	const { sendMessage, isSending } = useChat();
+	const { openModal } = useSignupModal();
+	const navigate = useNavigate();
+
+	const handleAskIsang = async (description: string) => {
+		const remaining = localStorage.getItem("conversations_remaining");
+
+		if (remaining === "0") {
+			openModal();
+			return;
+		}
+
+		try {
+			const data = await sendMessage.mutateAsync({ message: description });
+			if (data?.sessionId) {
+				navigate(`/chat/${data.sessionId}`, { state: { fromHome: true } });
+			}
+		} catch (error) {
+			console.error("Failed to start conversation:", error);
+		}
+	};
 
 	return (
 		<div className="flex flex-col h-full bg-white relative">
@@ -79,13 +102,18 @@ export default function Home() {
 											<p className="text-gray-500 text-sm leading-relaxed mb-6 font-ibm">
 												{suggestion.description}
 											</p>
-											<Link
-												to="/chat"
-												className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF4405] font-ibm"
+											<button
+												onClick={() => handleAskIsang(suggestion.description)}
+												disabled={isSending}
+												className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF4405] font-ibm hover:opacity-80 transition-opacity disabled:opacity-50"
 											>
 												Ask Isang
-												<Sparkles className="w-4 h-4" />
-											</Link>
+												{isSending ? (
+													<Loader2 className="w-4 h-4 animate-spin" />
+												) : (
+													<Sparkles className="w-4 h-4" />
+												)}
+											</button>
 										</div>
 									))}
 								</div>

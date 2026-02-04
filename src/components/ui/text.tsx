@@ -2,12 +2,10 @@ import React, { type ElementType } from "react";
 
 type Variant = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLElement> {
   variant: Variant;
   children: React.ReactNode;
-  className?: string;
   as?: ElementType;
-  id?: string;
 }
 
 const tags: Record<Variant, ElementType> = {
@@ -32,12 +30,15 @@ const sizes: Record<Variant, string> = {
   span: "text-sm",
 };
 
-const Text = ({ variant, children, className, id, as }: Props) => {
+const Text = ({ variant, children, className, as, ...props }: Props) => {
   const sizeClasses = sizes[variant];
   const Tag = as || tags[variant];
 
   return (
-    <Tag id={id} className={`${sizeClasses} font-ibm ${className ? className : ""}`}>
+    <Tag
+      className={`${sizeClasses} font-ibm ${className ? className : ""}`}
+      {...props}
+    >
       {children}
     </Tag>
   );

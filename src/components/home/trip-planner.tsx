@@ -14,6 +14,9 @@ import {
 import { RangeCalendar } from "@/components/ui/range-calender";
 import Text from "@/components/ui/text";
 import DestinationHero from "@/components/home/destination-hero";
+import { useChat } from "@/hooks/use-chat";
+import { useSignupModal } from "@/hooks/use-signup-modal";
+import { Loader2 } from "lucide-react";
 
 type Destination = {
   id: string;
@@ -78,6 +81,8 @@ export default function TripPlanner() {
   const [destinationOpen, setDestinationOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+  const { sendMessage, isSending } = useChat();
+  const { openModal } = useSignupModal();
   const destinationWrapperRef = useRef<HTMLDivElement | null>(null);
   const destinationDropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -204,6 +209,34 @@ export default function TripPlanner() {
       dates: "",
       days: "",
     }));
+  };
+
+  const handleLetsGo = async () => {
+    if (!values.destination || isSending) return;
+
+    const remaining = localStorage.getItem("conversations_remaining");
+    if (remaining === "0") {
+      openModal();
+      return;
+    }
+
+    const parts = [`I am going to ${values.destination}`];
+    if (values.budget) parts.push(`with ₦ ${values.budget}`);
+    if (values.dates) parts.push(`starting ${values.dates}`);
+    if (values.days) parts.push(`for ${values.days} days`);
+
+    const prompt = `${parts.join(", ")}. Can you help me plan this trip?`;
+
+    try {
+      const data = await sendMessage.mutateAsync({ message: prompt });
+      if (data?.sessionId) {
+        // Scroll to top before navigating
+        window.scrollTo(0, 0);
+        navigate(`/chat/${data.sessionId}`, { state: { ...values, fromHome: true } });
+      }
+    } catch (error) {
+      console.error("Failed to start trip planning:", error);
+    }
   };
 
   return (
@@ -376,21 +409,15 @@ export default function TripPlanner() {
         </div>
 
         <Button
-          onClick={() => {
-            if (
-              !values.destination 
-            )
-              return;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).scrollTo(0, 0);
-            navigate("/chat", { state: values });
-          }}
-          disabled={
-            !values.destination
-          }
-          className="w-full md:w-auto rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleLetsGo}
+          disabled={!values.destination || isSending}
+          className="w-full md:w-auto rounded-[8px] bg-[#FF5A1F] px-6 py-3 text-sm font-ibm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed min-w-[120px]"
         >
-          Let&apos;s go!
+          {isSending ? (
+            <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+          ) : (
+            "Let's go!"
+          )}
         </Button>
 
         <p className="text-xs md:text-sm text-gray-500 font-medium pt-4 md:pt-6">

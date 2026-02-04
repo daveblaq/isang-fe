@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { format } from "date-fns";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Share2, MapPin, ExternalLink } from "lucide-react";
+import { ChevronDown, Share2, MapPin, ExternalLink, Sparkles } from "lucide-react";
 import DashLayout from "@/components/layouts/sidebar-layout";
 import {
 	Dialog,
@@ -36,6 +36,48 @@ const getDomain = (url: string) => {
 	}
 };
 
+const SourceLinks = ({ itemList, onLinkClick }: { itemList: any[], onLinkClick: (url: string) => void }) => {
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	const uniqueSources = itemList.reduce((acc: Record<string, string>, item: any) => {
+		if (item.link) {
+			const domain = getDomain(item.link);
+			if (!acc[domain]) acc[domain] = item.link;
+		}
+		return acc;
+	}, {});
+
+	const entries = Object.entries(uniqueSources);
+	if (entries.length === 0) return <span>AI recommendation</span>;
+
+	const displayedEntries = isExpanded ? entries : entries.slice(0, 3);
+	const hasMore = entries.length > 3;
+
+	return (
+		<>
+			{displayedEntries.map(([domain, url], i) => (
+				<span key={domain}>
+					<button
+						onClick={() => onLinkClick(url)}
+						className="text-blue-500 underline hover:text-blue-600 transition-colors"
+					>
+						{domain}
+					</button>
+					{i < displayedEntries.length - 1 || (hasMore && !isExpanded) ? ", " : ""}
+				</span>
+			))}
+			{hasMore && !isExpanded && (
+				<button
+					onClick={() => setIsExpanded(true)}
+					className="text-[#FF5A1F] font-medium hover:underline"
+				>
+					{entries.length - 3} more
+				</button>
+			)}
+		</>
+	);
+};
+
 
 export default function TripChat() {
 	const location = useLocation();
@@ -64,22 +106,29 @@ export default function TripChat() {
 
 	// Local trip state for edits
 	const [tripDetails, setTripDetails] = useState({
-		destination: location.state?.destination || "Cape Town",
-		budget: location.state?.budget || "46.5M",
-		dates: location.state?.dates || "Aug 18-21",
-		days: location.state?.days || "3",
+		destination: location.state?.destination ?? "Cape Town",
+		budget: location.state?.budget ?? "46.5M",
+		dates: location.state?.dates ?? "Aug 18-21",
+		days: location.state?.days ?? "3",
 		travellers: "Travellers"
 	});
 
-	const { messages, isSending, isLoadingHistory, pendingMessage } = useChat();
+	const { sessionId } = useParams();
+	const { messages, isSending, isLoadingHistory, pendingMessage } = useChat(sessionId);
 	const [historyCount, setHistoryCount] = useState<number | null>(null);
+
+	// Reset history count when session changes to avoid re-typing old history
+	useEffect(() => {
+		setHistoryCount(null);
+	}, [sessionId]);
 
 	useEffect(() => {
 		// Capture the initial number of messages once history is loaded
 		if (!isLoadingHistory && historyCount === null) {
-			setHistoryCount(messages.length);
+			const isFromHome = location.state?.fromHome;
+			setHistoryCount(isFromHome ? Math.max(0, messages.length - 1) : messages.length);
 		}
-	}, [isLoadingHistory, messages.length, historyCount]);
+	}, [isLoadingHistory, messages.length, historyCount, location.state]);
 
 	// Typing states for AI interaction
 	const [showStays, setShowStays] = useState(false);
@@ -106,8 +155,15 @@ export default function TripChat() {
 		setShowStays(true);
 	}, []);
 
-	// Initial intro text (can be updated if we want it dynamic, but for now we keep the original)
-	const introText = `You're heading to ${tripDetails.destination} from ${tripDetails.dates} for ${tripDetails.days} days, with a budget of ₦${tripDetails.budget} (roughly R140,000). That's more than enough for a stylish city-meets-nature getaway. Here's what fits your vibe 👇🏾`;
+	// Initial intro text
+	const introText = useMemo(() => {
+		const parts = [`You're heading to ${tripDetails.destination}`];
+		if (tripDetails.dates) parts.push(`from ${tripDetails.dates}`);
+		if (tripDetails.days) parts.push(`for ${tripDetails.days} days`);
+		if (tripDetails.budget) parts.push(`with a budget of ₦${tripDetails.budget}`);
+
+		return `${parts.join(" ")}. Here's what fits your vibe 👇🏾`;
+	}, [tripDetails]);
 
 	const handleDateSave = (range: DateRange | undefined) => {
 		if (range?.from && range?.to) {
@@ -299,34 +355,25 @@ export default function TripChat() {
 
 																<div className="text-right">
 																	<span className="text-xs text-gray-400 italic">
-																		Sources ~ {(() => {
-																			const uniqueSources = itemList.reduce((acc: Record<string, string>, item: any) => {
-																				if (item.link) {
-																					const domain = getDomain(item.link);
-																					if (!acc[domain]) acc[domain] = item.link;
-																				}
-																				return acc;
-																			}, {});
-																			const entries = Object.entries(uniqueSources);
-
-																			return entries.map(([domain, url], i) => (
-																				<span key={domain}>
-																					<button
-																						onClick={() => handleExternalLink(url)}
-																						className="text-blue-500 underline hover:text-blue-600 transition-colors"
-																					>
-																						{domain}
-																					</button>
-																					{i < entries.length - 1 ? ", " : ""}
-																				</span>
-																			));
-																		})()}
-																		{itemList.every((item: any) => !item.link) && "AI recommendation"}
+																		Sources ~ <SourceLinks itemList={itemList} onLinkClick={handleExternalLink} />
 																	</span>
 																</div>
 															</div>
 														);
 													})}
+
+													{msg.followUpQuestion && (
+														<div className="w-full mt-8 pt-6 border-t border-gray-100">
+															<div className="flex items-start gap-3 bg-[#FFF9F5] p-4 rounded-xl border border-[#FFE6D5]">
+																<Sparkles className="w-5 h-5 text-[#FF5A1F] flex-shrink-0 mt-0.5" />
+																<div className="flex-1">
+																	<p className="text-sm md:text-base text-gray-800 font-medium font-ibm">
+																		{msg.followUpQuestion}
+																	</p>
+																</div>
+															</div>
+														</div>
+													)}
 												</div>
 											</>
 										)}
@@ -361,7 +408,13 @@ export default function TripChat() {
 									<>
 										<div className="flex justify-end pt-4">
 											<div className="bg-[#FFF9F5] text-gray-900 px-5 py-3 rounded-[20px] rounded-tr-sm max-w-[80%] md:max-w-[70%] text-sm md:text-base leading-relaxed">
-												I am going to {tripDetails.destination}, with ₦ {tripDetails.budget}, starting {tripDetails.dates}, for {tripDetails.days} days
+												{(() => {
+													const parts = [`I am going to ${tripDetails.destination}`];
+													if (tripDetails.budget) parts.push(`with ₦ ${tripDetails.budget}`);
+													if (tripDetails.dates) parts.push(`starting ${tripDetails.dates}`);
+													if (tripDetails.days) parts.push(`for ${tripDetails.days} days`);
+													return parts.join(", ");
+												})()}
 											</div>
 										</div>
 
