@@ -3,10 +3,25 @@ import { api } from "@/lib/api";
 import { useSignupModal } from "@/hooks/use-signup-modal";
 import { toast } from "@/components/ui/use-toast";
 
+export interface SuggestionItem {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl?: string;
+  image?: string;
+  estimatedCost?: number;
+  location?: string;
+  latitude?: number;
+  longitude?: number;
+  rating?: number;
+  link: string;
+}
+
 export interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: string;
+  suggestions?: Record<string, SuggestionItem[] | any>;
 }
 
 interface ChatRequest {

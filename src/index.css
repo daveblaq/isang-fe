@@ -35,6 +35,9 @@ body {
   .blur-loading {
     @apply animate-pulse bg-slate-200;
   }
+  .ease-premium {
+    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  }
 }
 
 @keyframes blink {

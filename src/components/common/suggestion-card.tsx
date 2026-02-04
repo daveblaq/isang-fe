@@ -4,14 +4,16 @@ import { cn } from "@/lib/utils";
 interface SuggestionCardProps {
 	image: string;
 	title: string;
+	description?: string;
 	className?: string;
+	onClick?: () => void;
 }
 
-export default function SuggestionCard({ image, title, className }: SuggestionCardProps) {
+export default function SuggestionCard({ image, title, description, className, onClick }: SuggestionCardProps) {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	return (
-		<div className={cn("group cursor-pointer space-y-2", className)}>
+		<div onClick={onClick} className={cn("group cursor-pointer space-y-2", className)}>
 			<div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 relative">
 				{!isLoaded && (
 					<div className="absolute inset-0 blur-loading backdrop-blur-sm" />
@@ -27,12 +29,19 @@ export default function SuggestionCard({ image, title, className }: SuggestionCa
 					onLoad={() => setIsLoaded(true)}
 				/>
 			</div>
-			<h4
-				className="text-sm font-medium text-gray-500 line-clamp-2 leading-snug"
-				title={title}
-			>
-				{title}
-			</h4>
+			<div>
+				<h4
+					className="text-sm font-bold text-gray-900 line-clamp-1 leading-snug"
+					title={title}
+				>
+					{title}
+				</h4>
+				{description && (
+					<p className="text-[12px] text-gray-500 line-clamp-2 leading-normal mt-1">
+						{description}
+					</p>
+				)}
+			</div>
 		</div>
 	);
 }

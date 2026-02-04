@@ -21,14 +21,12 @@ interface VerifyRequest {
 }
 
 interface VerifyResponse {
+  token: string;
+  userId: string;
+  email: string;
+  emailVerified: boolean;
+  sessionId: string;
   message: string;
-  accessToken: string;
-  refreshToken: string;
-  user: {
-    id: string;
-    email: string;
-    // Add other user fields
-  };
 }
 
 export const useAuth = () => {
@@ -57,10 +55,15 @@ export const useAuth = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      // Store tokens
-      if (data.accessToken) {
-        localStorage.setItem("access_token", data.accessToken);
-        localStorage.setItem("refresh_token", data.refreshToken);
+      // Store token and userId
+      if (data.token) {
+        localStorage.setItem("access_token", data.token);
+        // localStorage.setItem("user_id", data.userId);
+        
+        // Update sessionId if provided
+        if (data.sessionId) {
+          localStorage.setItem("isang_session_id", data.sessionId);
+        }
       }
       console.log("Verification successful:", data);
     },
@@ -96,10 +99,13 @@ export const useAuth = () => {
     },
   });
 
+  const isAuthenticated = !!localStorage.getItem("access_token");
+
   return {
     register,
     verify,
     resendCode,
+    isAuthenticated,
     isRegisterLoading: register.isPending,
     isVerifyLoading: verify.isPending,
     isResendingCode: resendCode.isPending,

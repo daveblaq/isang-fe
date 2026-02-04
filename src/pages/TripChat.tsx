@@ -2,8 +2,16 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Share2, MapPin } from "lucide-react";
+import { ChevronDown, Share2, MapPin, ExternalLink } from "lucide-react";
 import DashLayout from "@/components/layouts/sidebar-layout";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import ChatInput from "@/components/common/chat-input";
 import MapView from "@/components/chat-screen/map-view";
 import ItineraryDrawer from "@/components/chat-screen/itinerary-drawer";
@@ -18,6 +26,17 @@ import { type DateRange } from "react-day-picker";
 import { useChat } from "@/hooks/use-chat";
 import { motion, AnimatePresence } from "framer-motion";
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const getDomain = (url: string) => {
+	try {
+		return new URL(url).hostname.replace('www.', '');
+	} catch (e) {
+		return url;
+	}
+};
+
+
 export default function TripChat() {
 	const location = useLocation();
 	const [isMapOpen, setIsMapOpen] = useState(false);
@@ -27,6 +46,21 @@ export default function TripChat() {
 	const [isDateModalOpen, setIsDateModalOpen] = useState(false);
 	const [isTravellersModalOpen, setIsTravellersModalOpen] = useState(false);
 	const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+	const [externalLink, setExternalLink] = useState<string | null>(null);
+	const [isExternalModalOpen, setIsExternalModalOpen] = useState(false);
+
+	const handleExternalLink = (url: string) => {
+		setExternalLink(url);
+		setIsExternalModalOpen(true);
+	};
+
+	const confirmExternalLink = () => {
+		if (externalLink) {
+			window.open(externalLink, "_blank", "noopener,noreferrer");
+			setIsExternalModalOpen(false);
+			setExternalLink(null);
+		}
+	};
 
 	// Local trip state for edits
 	const [tripDetails, setTripDetails] = useState({
@@ -231,6 +265,68 @@ export default function TripChat() {
 														}
 														className="prose text-gray-800 text-sm md:text-base leading-relaxed max-w-none w-fit"
 													/>
+
+													{/* Dynamic Suggestions */}
+													{msg.suggestions && Object.entries(msg.suggestions).map(([category, items]) => {
+														const isArray = Array.isArray(items);
+														const itemList = isArray ? items : [items];
+
+														return (
+															<div key={category} className="space-y-4 bg-white border border-[#EDF0F6] p-4 rounded-[12px] w-full overflow-hidden mt-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
+																<div className="flex items-center justify-between">
+																	<h3 className="text-base font-bold flex items-center gap-2">
+																		{category === 'stays' ? '🏨' : category === 'restaurants' ? '🥘' : category === 'activities' ? '🎡' : category === 'flights' ? '✈️' : category === 'visa' ? '🛂' : '📍'} {capitalize(category)}
+																	</h3>
+																	<Button variant="outline" className="text-[#FF5A1F] border-[#FF5A1F] hover:bg-[#FFF5F1] hover:text-[#FF5A1F] rounded-full h-8 text-xs font-medium">
+																		See more {category}
+																	</Button>
+																</div>
+
+																<div className={isArray && itemList.length > 3
+																	? "flex overflow-x-auto no-scrollbar gap-4 pb-2 -mx-1 px-1 w-full"
+																	: "grid grid-cols-1 md:grid-cols-3 gap-4 w-full"}>
+																	{itemList.map((item: any, idx: number) => (
+																		<div key={item.id || idx} className={isArray && itemList.length > 3 ? "w-[240px] md:w-[260px] flex-shrink-0" : ""}>
+																			<SuggestionCard
+																				image={item.imageUrl || item.image || 'https://placehold.co/400x300?text=No+Image'}
+																				title={item.name || item.title || capitalize(category)}
+																				description={item.description}
+																				onClick={() => item.link && handleExternalLink(item.link)}
+																			/>
+																		</div>
+																	))}
+																</div>
+
+																<div className="text-right">
+																	<span className="text-xs text-gray-400 italic">
+																		Sources ~ {(() => {
+																			const uniqueSources = itemList.reduce((acc: Record<string, string>, item: any) => {
+																				if (item.link) {
+																					const domain = getDomain(item.link);
+																					if (!acc[domain]) acc[domain] = item.link;
+																				}
+																				return acc;
+																			}, {});
+																			const entries = Object.entries(uniqueSources);
+
+																			return entries.map(([domain, url], i) => (
+																				<span key={domain}>
+																					<button
+																						onClick={() => handleExternalLink(url)}
+																						className="text-blue-500 underline hover:text-blue-600 transition-colors"
+																					>
+																						{domain}
+																					</button>
+																					{i < entries.length - 1 ? ", " : ""}
+																				</span>
+																			));
+																		})()}
+																		{itemList.every((item: any) => !item.link) && "AI recommendation"}
+																	</span>
+																</div>
+															</div>
+														);
+													})}
 												</div>
 											</>
 										)}
@@ -308,8 +404,11 @@ export default function TripChat() {
 														</div>
 
 														<div className="text-right">
-															<span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
-																Sources ~ Booking.com, agoda, Reddit
+															<span className="text-xs text-gray-400 italic">
+																Sources ~
+																<button onClick={() => handleExternalLink("https://www.booking.com")} className="text-blue-500 underline hover:text-blue-600 ml-1">Booking.com</button>,
+																<button onClick={() => handleExternalLink("https://www.agoda.com")} className="text-blue-500 underline hover:text-blue-600 ml-1">agoda</button>,
+																<button onClick={() => handleExternalLink("https://www.reddit.com")} className="text-blue-500 underline hover:text-blue-600 ml-1">Reddit</button>
 															</span>
 														</div>
 													</div>
@@ -341,8 +440,11 @@ export default function TripChat() {
 														</div>
 
 														<div className="text-right">
-															<span className="text-xs text-blue-500 underline cursor-pointer hover:text-blue-600 italic">
-																Sources ~ Booking.com, agoda, Reddit
+															<span className="text-xs text-gray-400 italic">
+																Sources ~
+																<button onClick={() => handleExternalLink("https://www.booking.com")} className="text-blue-500 underline hover:text-blue-600 ml-1">Booking.com</button>,
+																<button onClick={() => handleExternalLink("https://www.agoda.com")} className="text-blue-500 underline hover:text-blue-600 ml-1">agoda</button>,
+																<button onClick={() => handleExternalLink("https://www.reddit.com")} className="text-blue-500 underline hover:text-blue-600 ml-1">Reddit</button>
 															</span>
 														</div>
 													</div>
@@ -480,6 +582,40 @@ export default function TripChat() {
 					</motion.div>
 				)}
 			</AnimatePresence>
+			{/* External Link Confirmation Dialog */}
+			<Dialog open={isExternalModalOpen} onOpenChange={setIsExternalModalOpen}>
+				<DialogContent className="sm:max-w-[425px] bg-white">
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-2">
+							<ExternalLink className="w-5 h-5 text-[#FF5A1F]" />
+							External Link
+						</DialogTitle>
+						<DialogDescription className="py-2">
+							You are about to visit an external website:
+							<div className="mt-2 p-3 bg-gray-50 rounded-lg break-all text-sm font-mono text-gray-600 border border-gray-100 italic">
+								{externalLink}
+							</div>
+							Are you sure you want to continue?
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter className="flex gap-2 sm:gap-0 mt-4">
+						<Button
+							variant="outline"
+							onClick={() => setIsExternalModalOpen(false)}
+							className="flex-1 sm:flex-none py-3"
+						>
+							Cancel
+						</Button>
+						<Button
+							onClick={confirmExternalLink}
+							className="bg-[#FF5A1F] hover:bg-[#E64A19] text-white flex-1 sm:flex-none py-3"
+						>
+							Visit Site
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
 			{/* Itinerary Drawer */}
 			<ItineraryDrawer
 				isOpen={isItineraryOpen}
